@@ -5,18 +5,17 @@ public class Product {
     String id;
     Helper.ProductType type;
     String description;
-    double price;
+    int price;
     Helper.Customers forWhom;
     String imageProduct;
     String sellerId;
 
-    public Product(String id, Helper.ProductType type, String description, double price, Helper.Customers forWhom, String imageProduct, String sellerId)
+    public Product(String id, Helper.ProductType type, String description, int price, Helper.Customers forWhom, String imageProduct, String sellerId)
      {
         this.id = id;
         this.type = type;
         this.description = description;
         this.price = price;
-
         this.forWhom = forWhom;
         this.imageProduct = imageProduct;
         this.sellerId = sellerId;
@@ -29,7 +28,7 @@ public class Product {
 
     public String getDescription() { return description; }
 
-    public double getPrice() { return price; }
+    public int getPrice() { return price; }
 
     public Helper.Customers getForWhom() { return forWhom; }
 
@@ -41,7 +40,7 @@ public class Product {
 
     public void setDescription(String description) { this.description = description; }
 
-    public void setPrice(double price) { this.price = price; }
+    public void setPrice(int price) { this.price = price; }
 
     public void setForWhom(Helper.Customers forWhom) { this.forWhom = forWhom; }
 

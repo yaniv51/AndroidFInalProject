@@ -46,24 +46,24 @@ public class NewProductActivity extends ActionBarActivity {
         description = (EditText) findViewById(R.id.new_product_description);
         price = (EditText) findViewById(R.id.new_product_price);
         forWhom = (EditText) findViewById(R.id.new_product_forWhom);
-        imageProduct = (TextView) findViewById(R.id.new_product_image);
+        //imageProduct = (TextView) findViewById(R.id.new_p);
         setFocusing();
     }
 
     public void createProduct()
     {
         String prId, prType, prDescription, prPrice, prForWhom , prImageProduct;
-        Person prSeller;
+        //Person prSeller;
 
         prType = type.getText().toString();
         prDescription = description.getText().toString();
         prPrice = price.getText().toString();
         prForWhom = forWhom.getText().toString();
         prImageProduct = imageProduct.getText().toString();
-        prSeller = Product.getSeller();
+        //prSeller = new
 
 
-        if(Person.instance().isIdValid(prId))
+        /*if(Person.instance().isIdValid(prId))
         {
             Product newProduct = new Product(prId, prType, prDescription, prPrice, prForWhom, prImageProduct, prSeller);
             Person.instance().add(newProduct);
@@ -83,7 +83,7 @@ public class NewProductActivity extends ActionBarActivity {
 
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
-        }
+        }*/
     }
 
     private void setFocusing()

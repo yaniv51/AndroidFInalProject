@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import model.Model;
 import model.Person;
 import model.Product;
 
@@ -34,8 +35,8 @@ public class ProductListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
 
-        list = (ListView) findViewById(R.id.product_listview);
-        data = Person.instance().getProducts();
+        list = (ListView) findViewById(R.id.product_listView);
+        data = Model.getInstance().getProducts();
 
         adapter = new MyAddapter();
         list.setAdapter(adapter);
@@ -148,9 +149,9 @@ public class ProductListActivity extends Activity {
             Product pr = data.get(position);
             if(pr==null)
                 return convertView;
-            type.setText(pr.getType());
+            type.setText(pr.getType().toString());
             price.setText(pr.getPrice());
-            forWhom.setText(pr.getForWhom());
+            forWhom.setText(pr.getForWhom().toString());
             imageProduct.setText(pr.getImageProduct());
 
             return convertView;

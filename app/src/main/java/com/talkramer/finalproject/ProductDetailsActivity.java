@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import model.Model;
 import model.Person;
 import model.Product;
 
@@ -45,7 +46,7 @@ public class ProductDetailsActivity extends Activity {
 
     private void updateProductById(String productId)
     {
-        currentProduct = Person.instance().getProduct(productId);
+        currentProduct = Model.getInstance().getProduct(productId);
         updateProductDetails();
     }
 
@@ -97,7 +98,7 @@ public class ProductDetailsActivity extends Activity {
         if(currentProduct == null)
             return;
         TextView typeTextView = (TextView) findViewById(R.id.product_details_type);
-        typeTextView.setText(currentProduct.getType());
+        typeTextView.setText(currentProduct.getType().toString());
 
         TextView descriptionTextView = (TextView) findViewById(R.id.product_details_description);
         descriptionTextView.setText(currentProduct.getDescription());
@@ -106,10 +107,10 @@ public class ProductDetailsActivity extends Activity {
         priceTextView.setText(currentProduct.getPrice());
 
         TextView forWhomTextView = (TextView) findViewById(R.id.product_details_forWhom);
-        forWhomTextView.setText(currentProduct.getForWhom());
+        forWhomTextView.setText(currentProduct.getForWhom().toString());
 
-        TextView imageProduct = (TextView) findViewById(R.id.product_details_image);
-        imageProduct.setText(currentProduct.getImageProduct());
+        /*TextView imageProduct = (TextView) findViewById(R.id.product_details_imag);
+        imageProduct.setText(currentProduct.getImageProduct());*/
     }
 
     @Override
