@@ -1,83 +1,50 @@
 package model;
 
-import android.media.Image;
-import android.widget.ImageView;
-
 public class Product {
+
     String id;
-    String type;
+    Helper.ProductType type;
     String description;
-    String price;
-    String forWhom;
+    double price;
+    Helper.Customers forWhom;
     String imageProduct;
+    String sellerId;
 
-    Person seller;
-
-        public Product(String id, String type, String description, String price, String forWhom, String imageProduct, Person seller) {
+    public Product(String id, Helper.ProductType type, String description, double price, Helper.Customers forWhom, String imageProduct, String sellerId)
+     {
         this.id = id;
         this.type = type;
         this.description = description;
         this.price = price;
+
         this.forWhom = forWhom;
         this.imageProduct = imageProduct;
-        this.seller = seller;
+        this.sellerId = sellerId;
     }
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String value) {
-        this.id = value;
-    }
+    public String getId() { return id; }
 
-    public String getType() {
-        return type;
-    }
+    public Helper.ProductType getType() { return type; }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public String getDescription() { return description; }
 
-    public String getDescription() {
-        return description;
-    }
+    public double getPrice() { return price; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public Helper.Customers getForWhom() { return forWhom; }
 
-    public String getPrice() {
-        return price;
-    }
+    public String getImageProduct() { return imageProduct; }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
+    public String getSellerId() { return sellerId; }
 
-    public String getForWhom() {
-        return forWhom;
-    }
+    public void setType(Helper.ProductType type) { this.type = type; }
 
-    public void setForWhom(String forWhom) {
-        this.forWhom = forWhom;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getImageProduct() {
-        return imageProduct;
-    }
+    public void setPrice(double price) { this.price = price; }
 
-    public void setImageProduct(String imageProduct) {
-        this.imageProduct = imageProduct;
-    }
+    public void setForWhom(Helper.Customers forWhom) { this.forWhom = forWhom; }
 
-    public Person getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Person seller) {
-        this.seller = seller;
-    }
-
+    public void setImageProduct(String imageProduct) { this.imageProduct = imageProduct; }
 }
 
