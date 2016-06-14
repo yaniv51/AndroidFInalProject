@@ -1,0 +1,163 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.talkramer.finalproject.fragments.ProductDetailsFragment">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        tools:context=".main">
+        <ImageButton
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:id="@+id/product_details_imageView"
+            android:src="@drawable/image"
+            android:layout_gravity="center"
+            android:clickable="false"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Description:"
+                android:paddingRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/product_details_description"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Price:"
+                android:paddingRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/product_details_price"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Type:"
+                android:paddingRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/product_details_type"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Type:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="For:"
+                android:paddingRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/edit_product_radio_group"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton android:id="@+id/product_details_radio_men"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Men"
+                    android:enabled="false"
+                    android:paddingRight="12dp"/>
+                <RadioButton android:id="@+id/product_details_radio_women"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Women"
+                    android:enabled="false"
+                    android:paddingRight="12dp" />
+                <RadioButton android:id="@+id/product_details_radio_unisex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Unisex"
+                    android:enabled="false" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Seller:"
+                android:paddingRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:enabled="false"
+                android:id="@+id/product_details_seller"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
+            <Button
+                android:id="@+id/product_details_buy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Buy"/>
+            <Button
+                android:id="@+id/product_details_edit"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Edit"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>
