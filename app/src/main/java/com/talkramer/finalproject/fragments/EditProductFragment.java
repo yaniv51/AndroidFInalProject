@@ -1,12 +1,15 @@
 package com.talkramer.finalproject.fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -30,7 +33,6 @@ public class EditProductFragment extends Fragment {
     private RadioButton menRadio, womenRadio, unisexRadio;
     private Product currentProduct;
     private Helper.ActionResult result;
-
     private View view;
 
 
@@ -42,11 +44,10 @@ public class EditProductFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        view = inflater.inflate(R.layout.fragment_edit_product, container, false);
-
         final String productId = (String) getActivity().getIntent().getExtras().get(Helper.ProductId);
         Log.d("TAG", "student id = " + productId);
+
+        view = inflater.inflate(R.layout.fragment_edit_product, container, false);
         currentProduct = Model.getInstance().getProduct(productId);
 
         Button save = (Button) view.findViewById(R.id.edit_product_save);
@@ -58,6 +59,19 @@ public class EditProductFragment extends Fragment {
             public void onClick(View v) {
                 if(!updateProduct())
                 {
+                    //if already in use and not by current student - show error message
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setMessage("Values are not valid. Try again");
+
+                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            return;
+                        }
+                    });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
                     return;
                 }
                 result = Helper.ActionResult.SAVE;
@@ -90,6 +104,9 @@ public class EditProductFragment extends Fragment {
         womenRadio = (RadioButton) view.findViewById(R.id.edit_product_radio_women);
         unisexRadio = (RadioButton) view.findViewById(R.id.edit_product_radio_unisex);
 
+        setSpinnerAdapter();
+        UpdateProductOnUI();
+
         return view;
     }
 
@@ -98,13 +115,26 @@ public class EditProductFragment extends Fragment {
         Helper.ProductType productType;
         Helper.Customers customer;
         description.setText(currentProduct.getDescription());
-        price.setText(currentProduct.getPrice());
+        price.setText("" + currentProduct.getPrice());
         seller.setText(currentProduct.getSellerId());
 
         customer = currentProduct.getForWhom();
-        menRadio.setSelected(customer == Helper.Customers.MEN);
-        womenRadio.setSelected(customer == Helper.Customers.WOMEN);
-        unisexRadio.setSelected(customer == Helper.Customers.UNISEX);
+        menRadio.setChecked(customer == Helper.Customers.MEN);
+        womenRadio.setChecked(customer == Helper.Customers.WOMEN);
+        unisexRadio.setChecked(customer == Helper.Customers.UNISEX);
+
+        productType = currentProduct.getType();
+        Log.d("TAG", "item is"+productType);
+        typeSpinner.setSelection(productType.ordinal());
+    }
+
+    private  void setSpinnerAdapter()
+    {
+        ArrayAdapter<CharSequence> spinnerAdapter;
+
+        spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.product_types_array, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(spinnerAdapter);
     }
 
 
@@ -115,7 +145,8 @@ public class EditProductFragment extends Fragment {
             @Override
             public void ok() {
                 Log.d("TAG", "activity receive OK");
-                getActivity().finish();
+                //TODO: set save operation for update
+                getFragmentManager().popBackStack();
             }
         });
         dialog.show(getFragmentManager(), "GGG");
@@ -124,19 +155,47 @@ public class EditProductFragment extends Fragment {
 
     public boolean updateProduct()
     {
-        String description, price, sellerId;
+        String description, stringPrice, sellerId;
         Helper.Customers customer = Helper.Customers.MEN;
+        Helper.ProductType type;
         Product newProduct;
+        int spinnerSelection, price;
 
         description = this.description.getText().toString();
-        price = this.description.getText().toString();
+        stringPrice = this.price.getText().toString();
         sellerId = this.seller.getText().toString();
 
-        customer = menRadio.isSelected()? Helper.Customers.MEN : customer;
-        customer = womenRadio.isSelected()? Helper.Customers.WOMEN : customer;
-        customer = unisexRadio.isSelected()? Helper.Customers.UNISEX : customer;
+        customer = menRadio.isChecked()? Helper.Customers.MEN : customer;
+        customer = womenRadio.isChecked()? Helper.Customers.WOMEN : customer;
+        customer = unisexRadio.isChecked()? Helper.Customers.UNISEX : customer;
 
-        newProduct = new Product(currentProduct.getId(), Helper.ProductType.DRESS, description, Integer.parseInt(price), customer, currentProduct.getImageProduct(),sellerId);
+        spinnerSelection = typeSpinner.getSelectedItemPosition();
+
+        switch (spinnerSelection)
+        {
+            case 0:
+                type = Helper.ProductType.SHIRT;
+                break;
+            case 1:
+                type = Helper.ProductType.PANTS;
+                break;
+            case 2:
+                type = Helper.ProductType.DRESS;
+                break;
+            default:
+                type = Helper.ProductType.OTHER;
+                break;
+        }
+
+        try {
+            price = Integer.parseInt(stringPrice);
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
+        newProduct = new Product(currentProduct.getId(), type, description, price , customer, currentProduct.getImageProduct(),sellerId);
 
         Model.getInstance().updateProductInformation(currentProduct.getId(), newProduct);
 

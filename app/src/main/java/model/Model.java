@@ -14,7 +14,6 @@ public class Model {
 
     private Model()
     {
-        instance = new Model();
         data = new LinkedList<Product>();
         init();
     }
@@ -85,7 +84,6 @@ public class Model {
                 product.setPrice(newProduct.getPrice());
                 product.setForWhom(newProduct.getForWhom());
                 product.setImageProduct(newProduct.getImageProduct());
-
             }
         }
     }

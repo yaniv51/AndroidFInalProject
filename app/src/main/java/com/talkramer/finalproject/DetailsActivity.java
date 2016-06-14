@@ -40,7 +40,7 @@ public class DetailsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         //Setting details screen layout
-        setContentView(R.layout.activity_details_view);
+        //setContentView(R.layout.activity_details_view);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -64,7 +64,7 @@ public class DetailsActivity extends ActionBarActivity {
         Picasso.with(this).load(image).into(imageView);
 
         //Set the background color to black
-        frameLayout = (FrameLayout) findViewById(R.id.main_background);
+        //frameLayout = (FrameLayout) findViewById(R.id.main_background);
         colorDrawable = new ColorDrawable(Color.BLACK);
         frameLayout.setBackground(colorDrawable);
 

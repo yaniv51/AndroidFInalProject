@@ -99,19 +99,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Men"
-                    android:paddingRight="30dp"
-                    android:onClick="onRadioButtonClicked"/>
+                    android:paddingRight="12dp"/>
                 <RadioButton android:id="@+id/edit_product_radio_women"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Women"
-                    android:paddingRight="30dp"
-                    android:onClick="onRadioButtonClicked"/>
+                    android:paddingRight="12dp" />
                 <RadioButton android:id="@+id/edit_product_radio_unisex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Unisex"
-                    android:onClick="onRadioButtonClicked"/>
+                    android:text="Unisex" />
             </RadioGroup>
         </LinearLayout>
 
