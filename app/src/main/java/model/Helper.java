@@ -18,8 +18,9 @@ public class Helper {
 
     public enum ActionResult
     {
-        SAVE, CANCEL, DELETE
+        CANCEL, SAVE, DELETE
     }
 
     public static final String ProductId = "PRODUCT_ID";
+    public static final String OPERATION = "OPERATION";
 }

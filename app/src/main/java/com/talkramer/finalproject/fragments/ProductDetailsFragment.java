@@ -36,7 +36,7 @@ public class ProductDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final String productId = (String) getActivity().getIntent().getExtras().get(Helper.ProductId);
-        Log.d("TAG", "product id = " + productId);
+        Log.d("TAG", "ProductDetailsFragment - product id = " + productId);
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_product_details, container, false);
 
@@ -48,15 +48,16 @@ public class ProductDetailsFragment extends Fragment {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TAG", "click to buy product: "+currentProduct.getId());
+                Log.d("TAG", "ProductDetailsFragment - click to buy product: "+currentProduct.getId());
             }
         });
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TAG", "click to edit product: " + currentProduct.getId());
+                Log.d("TAG", "ProductDetailsFragment - click to edit product: " + currentProduct.getId());
                 getActivity().getIntent().putExtra(Helper.ProductId, productId);
+                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.CANCEL.ordinal());
 
                 Fragment newFragment = new EditProductFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -84,11 +85,32 @@ public class ProductDetailsFragment extends Fragment {
 
     @Override
     public void onResume() {
+        int result;
         super.onResume();
-        //TODO: update UI only in case of return from edit product with successfully edit
+
+        result = getActivity().getIntent().getIntExtra(Helper.OPERATION, 0);
+
+        //update UI only in case of return from edit product with successfully edit
+        if(result == Helper.ActionResult.CANCEL.ordinal()) {
+            Log.d("TAG", "ProductDetailsFragment - resume with Cancel operation");
+        }
+        else if(result == Helper.ActionResult.SAVE.ordinal())
+        {
+            Log.d("TAG", "ProductDetailsFragment - resume with Save operation");
+            UpdateProductOnUI();
+        }
+        else if(result == Helper.ActionResult.DELETE.ordinal())
+        {
+            Log.d("TAG", "ProductDetailsFragment - resume with Delete operation");
+            Model.getInstance().delete(currentProduct);
+            //close current fragment and open the last one
+            getFragmentManager().popBackStack();
+        }
+        else
+            Log.d("TAG", "ProductDetailsFragment - resume with unknown operation: "+result);
+
+
         //https://developer.android.com/training/basics/fragments/communicating.html
-        Log.d("TAG", "PRODUCT DETAILS - RESUME");
-        UpdateProductOnUI();
     }
 
     //Update UI components by current product information
@@ -108,7 +130,7 @@ public class ProductDetailsFragment extends Fragment {
         unisexRadio.setChecked(customer == Helper.Customers.UNISEX);
 
         productType = currentProduct.getType();
-        Log.d("TAG", "item use" + productType);
+        //Log.d("TAG", "ProductDetailsFragment -  item use" + productType);
         typeArray = getResources().getStringArray(R.array.product_types_array);
         type.setText(typeArray[productType.ordinal()]);
     }

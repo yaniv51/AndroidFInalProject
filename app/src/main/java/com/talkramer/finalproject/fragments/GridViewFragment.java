@@ -52,9 +52,11 @@ public class GridViewFragment extends Fragment {
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Log.d("TAG", "clicked on " + +position);
+                String productId = data.get(position).getId();
 
-                getActivity().getIntent().putExtra(Helper.ProductId, data.get(position).getId());
+                Log.d("TAG", "GridViewFragment - clicked on product: ProductId = " + productId);
+                getActivity().getIntent().putExtra(Helper.ProductId, productId);
+                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.CANCEL.ordinal());
 
                 Fragment newFragment = new ProductDetailsFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -73,10 +75,25 @@ public class GridViewFragment extends Fragment {
 
     @Override
     public void onResume() {
+        int result;
         super.onResume();
-        //notify adapter list while fragment is resume - check if possible to do only when item removed/edited
-        if(imageAadapter!=null)
-            imageAadapter.notifyDataSetChanged();
+
+        result = getActivity().getIntent().getIntExtra(Helper.OPERATION, 0);
+
+        //update UI only in case of return from edit product with successfully edit
+        if(result == Helper.ActionResult.CANCEL.ordinal()) {
+            Log.d("TAG", "ProductDetailsFragment - resume with Cancel operation");
+        }
+        else if(result == Helper.ActionResult.SAVE.ordinal() || result == Helper.ActionResult.DELETE.ordinal())
+        {
+            //notify adapter list while fragment is resume - check if possible to do only when item removed/edited
+            String action = result==Helper.ActionResult.SAVE.ordinal()? "Save":"Delete";
+            Log.d("TAG", "GridViewFragment - resume with "+ action +" operation");
+            if(imageAadapter!=null)
+                imageAadapter.notifyDataSetChanged();
+        }
+        else
+            Log.d("TAG", "GridViewFragment - resume with unknown operation: "+result);
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -101,15 +118,14 @@ public class GridViewFragment extends Fragment {
             ImageView image;
             TextView text;
 
-
             if (convertView == null) {
                 //if it's not recycled, initialize
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 convertView = inflater.inflate(R.layout.grid_item_layout, null);
-                Log.d("TAG", "create view:" + position);
+                //Log.d("TAG", "create view:" + position);
                 image = (ImageView) convertView.findViewById(R.id.grid_item_image);
             } else {
-                Log.d("TAG", "use convert view:" + position);
+                //Log.d("TAG", "use convert view:" + position);
             }
 
             //set params of each item
@@ -118,8 +134,12 @@ public class GridViewFragment extends Fragment {
             Drawable res = getResources().getDrawable(imagerResource);
             image.setImageDrawable(res);
 
+            Product localProduct = data.get(position);
+            if(localProduct == null)
+                return  convertView;
+
             text = (TextView) convertView.findViewById(R.id.grid_item_text);
-            text.setText(""+position);
+            text.setText(""+localProduct.getId());
             return convertView;
         }
     }

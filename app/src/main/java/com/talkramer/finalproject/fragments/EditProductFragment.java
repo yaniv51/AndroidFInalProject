@@ -32,7 +32,6 @@ public class EditProductFragment extends Fragment {
     private Spinner typeSpinner;
     private RadioButton menRadio, womenRadio, unisexRadio;
     private Product currentProduct;
-    private Helper.ActionResult result;
     private View view;
 
 
@@ -45,7 +44,7 @@ public class EditProductFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final String productId = (String) getActivity().getIntent().getExtras().get(Helper.ProductId);
-        Log.d("TAG", "student id = " + productId);
+        Log.d("TAG", "EditProductFragment - product Id = " + productId);
 
         view = inflater.inflate(R.layout.fragment_edit_product, container, false);
         currentProduct = Model.getInstance().getProduct(productId);
@@ -74,7 +73,8 @@ public class EditProductFragment extends Fragment {
                     alertDialog.show();
                     return;
                 }
-                result = Helper.ActionResult.SAVE;
+                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
+                Log.d("TAG", "EditProductFragment - Product has been edited");
                 ShowSaveDialog();
             }
         });
@@ -82,17 +82,18 @@ public class EditProductFragment extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                result = Helper.ActionResult.CANCEL;
-                getActivity().finish();
+                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.CANCEL.ordinal());
+                Log.d("TAG", "EditProductFragment - Edit has been canceled");
+                getFragmentManager().popBackStack();
             }
         });
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Model.getInstance().delete(currentProduct);
-                result = Helper.ActionResult.DELETE;
-                getActivity().finish();
+                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.DELETE.ordinal());
+                Log.d("TAG", "EditProductFragment - Product has been deleted");
+                getFragmentManager().popBackStack();
             }
         });
 
@@ -124,7 +125,7 @@ public class EditProductFragment extends Fragment {
         unisexRadio.setChecked(customer == Helper.Customers.UNISEX);
 
         productType = currentProduct.getType();
-        Log.d("TAG", "item is"+productType);
+        //Log.d("TAG", "item is"+productType);
         typeSpinner.setSelection(productType.ordinal());
     }
 
@@ -144,14 +145,11 @@ public class EditProductFragment extends Fragment {
         dialog.setDelegate(new SaveOperationDialog.Delegate() {
             @Override
             public void ok() {
-                Log.d("TAG", "activity receive OK");
-                //TODO: set save operation for update
                 getFragmentManager().popBackStack();
             }
         });
         dialog.show(getFragmentManager(), "GGG");
     }
-
 
     public boolean updateProduct()
     {
