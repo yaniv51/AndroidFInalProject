@@ -1,5 +1,7 @@
 package model;
 
+import android.graphics.Bitmap;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import java.util.List;
 public class Model {
 
     private static Model instance;
+    private Bitmap image;
 
     List<Product> data;
 
@@ -16,6 +19,13 @@ public class Model {
     {
         data = new LinkedList<Product>();
         init();
+    }
+
+    public void SetLocalBitmap(Bitmap image)
+    {
+        this.image = image;
+        for(int i=0; i<data.size(); i++)
+            data.get(i).setImageProduct(image);
     }
 
     public static Model getInstance()
@@ -49,14 +59,14 @@ public class Model {
             else
                 type = Helper.ProductType.OTHER;
 
-            product = new Product("" + i, type, "Description: " + i, 12 + i, customer, "link " + i, "sellerId: "+i);
+            product = new Product("" + i, type, "Description: " + i, 12 + i, customer, "link " + i, "sellerId: "+i, image);
 
             add(product);
 
         }
     }
 
-    private void add(Product newProduct)
+    public void add(Product newProduct)
     {
         data.add(newProduct);
     }
@@ -83,6 +93,7 @@ public class Model {
                 product.setDescription(newProduct.getDescription());
                 product.setPrice(newProduct.getPrice());
                 product.setForWhom(newProduct.getForWhom());
+                product.setImageProductLink(newProduct.getImageProductLink());
                 product.setImageProduct(newProduct.getImageProduct());
             }
         }
@@ -96,5 +107,20 @@ public class Model {
         data.remove(product);
     }
 
+    public String getNewProductId()
+    {
+        Product lastProduct;
+        int newId;
 
+        if(!data.isEmpty())
+        {
+            lastProduct = data.get(data.size()-1);
+            newId = Integer.parseInt(lastProduct.getId()) + 1;
+        }
+        else
+        {
+            newId = 1;
+        }
+        return  ""+newId;
+    }
 }

@@ -15,7 +15,6 @@
             android:layout_width="170dp"
             android:layout_height="170dp"
             android:id="@+id/edit_product_details_imageView"
-            android:src="@drawable/image"
             android:layout_gravity="center"
             android:clickable="false"/>
 

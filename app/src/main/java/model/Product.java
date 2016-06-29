@@ -1,5 +1,7 @@
 package model;
 
+import android.graphics.Bitmap;
+
 public class Product {
 
     String id;
@@ -7,16 +9,18 @@ public class Product {
     String description;
     int price;
     Helper.Customers forWhom;
-    String imageProduct;
+    String imageProductLink;
+    Bitmap imageProduct;
     String sellerId;
 
-    public Product(String id, Helper.ProductType type, String description, int price, Helper.Customers forWhom, String imageProduct, String sellerId)
+    public Product(String id, Helper.ProductType type, String description, int price, Helper.Customers forWhom, String imageProductLink, String sellerId, Bitmap imageProduct)
      {
         this.id = id;
         this.type = type;
         this.description = description;
         this.price = price;
         this.forWhom = forWhom;
+        this.imageProductLink = imageProductLink;
         this.imageProduct = imageProduct;
         this.sellerId = sellerId;
     }
@@ -32,7 +36,9 @@ public class Product {
 
     public Helper.Customers getForWhom() { return forWhom; }
 
-    public String getImageProduct() { return imageProduct; }
+    public String getImageProductLink() { return imageProductLink; }
+
+    public Bitmap getImageProduct(){return imageProduct;}
 
     public String getSellerId() { return sellerId; }
 
@@ -44,6 +50,8 @@ public class Product {
 
     public void setForWhom(Helper.Customers forWhom) { this.forWhom = forWhom; }
 
-    public void setImageProduct(String imageProduct) { this.imageProduct = imageProduct; }
+    public void setImageProductLink(String imageProductLink) { this.imageProductLink = imageProductLink; }
+
+    public void setImageProduct(Bitmap imageProduct) {this.imageProduct = imageProduct;}
 }
 

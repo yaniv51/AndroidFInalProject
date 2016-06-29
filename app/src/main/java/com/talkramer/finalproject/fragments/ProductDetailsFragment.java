@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -24,13 +25,12 @@ public class ProductDetailsFragment extends Fragment {
     private TextView description, price, seller, type;
     private RadioButton menRadio, womenRadio, unisexRadio;
     private Product currentProduct;
-    private Helper.ActionResult result;
+    private ImageView imageView;
     private View view;
 
     public ProductDetailsFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,6 +77,7 @@ public class ProductDetailsFragment extends Fragment {
         menRadio = (RadioButton) view.findViewById(R.id.product_details_radio_men);
         womenRadio = (RadioButton) view.findViewById(R.id.product_details_radio_women);
         unisexRadio = (RadioButton) view.findViewById(R.id.product_details_radio_unisex);
+        imageView = (ImageView) view.findViewById(R.id.product_details_imageView);
 
         UpdateProductOnUI();
 
@@ -133,5 +134,6 @@ public class ProductDetailsFragment extends Fragment {
         //Log.d("TAG", "ProductDetailsFragment -  item use" + productType);
         typeArray = getResources().getStringArray(R.array.product_types_array);
         type.setText(typeArray[productType.ordinal()]);
+        imageView.setImageBitmap(currentProduct.getImageProduct());
     }
 }

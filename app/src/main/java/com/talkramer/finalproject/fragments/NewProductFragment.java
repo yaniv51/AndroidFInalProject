@@ -27,39 +27,31 @@ import model.Helper;
 import model.Model;
 import model.Product;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditProductFragment extends Fragment {
+public class NewProductFragment extends Fragment {
 
-    private EditText description, price, seller;
+    private View view;
+    private EditText description, price;
     private Spinner typeSpinner;
     private RadioButton menRadio, womenRadio, unisexRadio;
     private ImageButton imageButton;
-    private Product currentProduct;
-    private View view;
-    private Bitmap newImage;
+    private Bitmap image;
 
-
-    public EditProductFragment() {
+    public NewProductFragment() {
         // Required empty public constructor
-        newImage = null;
+        image = null;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final String productId = (String) getActivity().getIntent().getExtras().get(Helper.ProductId);
-        Log.d("TAG", "EditProductFragment - product Id = " + productId);
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_new_product, container, false);
 
-        view = inflater.inflate(R.layout.fragment_edit_product, container, false);
-        currentProduct = Model.getInstance().getProduct(productId);
-
-        Button save = (Button) view.findViewById(R.id.edit_product_save);
-        Button cancel = (Button) view.findViewById(R.id.edit_product_cancel);
-        Button delete = (Button) view.findViewById(R.id.edit_product_delete);
+        Button save = (Button) view.findViewById(R.id.new_product_save);
+        Button cancel = (Button) view.findViewById(R.id.new_product_cancel);
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +74,7 @@ public class EditProductFragment extends Fragment {
                     return;
                 }
                 getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
-                Log.d("TAG", "EditProductFragment - Product has been edited");
+                Log.d("TAG", "NewProductFragment - Product has been created");
                 ShowSaveDialog();
             }
         });
@@ -91,28 +83,18 @@ public class EditProductFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.CANCEL.ordinal());
-                Log.d("TAG", "EditProductFragment - Edit has been canceled");
+                Log.d("TAG", "NewProductFragment - Edit has been canceled");
                 getFragmentManager().popBackStack();
             }
         });
 
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.DELETE.ordinal());
-                Log.d("TAG", "EditProductFragment - Product has been deleted");
-                getFragmentManager().popBackStack();
-            }
-        });
-
-        description = (EditText) view.findViewById(R.id.edit_product_description);
-        price = (EditText) view.findViewById(R.id.edit_product_price);
-        seller = (EditText) view.findViewById(R.id.edit_product_seller);
-        typeSpinner = (Spinner) view.findViewById(R.id.edit_product_planets_spinner_type);
-        menRadio = (RadioButton) view.findViewById(R.id.edit_product_radio_men);
-        womenRadio = (RadioButton) view.findViewById(R.id.edit_product_radio_women);
-        unisexRadio = (RadioButton) view.findViewById(R.id.edit_product_radio_unisex);
-        imageButton = (ImageButton) view.findViewById(R.id.edit_product_details_imageView);
+        description = (EditText) view.findViewById(R.id.new_product_description);
+        price = (EditText) view.findViewById(R.id.new_product_price);
+        typeSpinner = (Spinner) view.findViewById(R.id.new_product_planets_spinner_type);
+        menRadio = (RadioButton) view.findViewById(R.id.new_product_radio_men);
+        womenRadio = (RadioButton) view.findViewById(R.id.new_product_radio_women);
+        unisexRadio = (RadioButton) view.findViewById(R.id.new_product_radio_unisex);
+        imageButton = (ImageButton) view.findViewById(R.id.new_product_imageView);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,9 +107,7 @@ public class EditProductFragment extends Fragment {
             }
         });
 
-
         setSpinnerAdapter();
-        UpdateProductOnUI();
 
         return view;
     }
@@ -137,28 +117,12 @@ public class EditProductFragment extends Fragment {
         if(requestCode == Helper.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
         {
             Bundle extras = data.getExtras();
-            newImage = (Bitmap)extras.get("data");
-            imageButton.setImageBitmap(newImage);
+            Bitmap imageBitmap = (Bitmap)extras.get("data");
+            imageButton.setImageBitmap(imageBitmap);
+            image = imageBitmap;
         }
     }
 
-    private void UpdateProductOnUI()
-    {
-        Helper.ProductType productType;
-        Helper.Customers customer;
-        description.setText(currentProduct.getDescription());
-        price.setText("" + currentProduct.getPrice());
-        seller.setText(currentProduct.getSellerId());
-
-        customer = currentProduct.getForWhom();
-        menRadio.setChecked(customer == Helper.Customers.MEN);
-        womenRadio.setChecked(customer == Helper.Customers.WOMEN);
-        unisexRadio.setChecked(customer == Helper.Customers.UNISEX);
-
-        productType = currentProduct.getType();
-        typeSpinner.setSelection(productType.ordinal());
-        imageButton.setImageBitmap(currentProduct.getImageProduct());
-    }
 
     private  void setSpinnerAdapter()
     {
@@ -168,7 +132,6 @@ public class EditProductFragment extends Fragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(spinnerAdapter);
     }
-
 
     private void ShowSaveDialog()
     {
@@ -184,16 +147,19 @@ public class EditProductFragment extends Fragment {
 
     public boolean updateProduct()
     {
-        Bitmap localImage;
         String description, stringPrice, sellerId;
         Helper.Customers customer = Helper.Customers.MEN;
         Helper.ProductType type;
         Product newProduct;
         int spinnerSelection, price;
 
+        //if image was not taken, do not continue
+        if(image == null)
+            return false;
+
         description = this.description.getText().toString();
         stringPrice = this.price.getText().toString();
-        sellerId = this.seller.getText().toString();
+        sellerId = "NewSellerId";
 
         customer = menRadio.isChecked()? Helper.Customers.MEN : customer;
         customer = womenRadio.isChecked()? Helper.Customers.WOMEN : customer;
@@ -217,22 +183,17 @@ public class EditProductFragment extends Fragment {
                 break;
         }
 
+        //if failed to create new Id or parse price
         try {
             price = Integer.parseInt(stringPrice);
+            newProduct = new Product(Model.getInstance().getNewProductId(), type, description, price, customer, "NewImage", sellerId, image);
         }
         catch (Exception ex)
         {
-            return false;
+            return  false;
         }
 
-        if(newImage == null)
-            localImage = currentProduct.getImageProduct();
-        else
-            localImage = newImage;
-
-        newProduct = new Product(currentProduct.getId(), type, description, price , customer, currentProduct.getImageProductLink(),sellerId, localImage);
-
-        Model.getInstance().updateProductInformation(currentProduct.getId(), newProduct);
+        Model.getInstance().add(newProduct);
         return  true;
     }
 }

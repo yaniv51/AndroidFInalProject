@@ -2,7 +2,6 @@ package com.talkramer.finalproject.fragments;
 
 
 import android.app.FragmentTransaction;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -59,6 +59,24 @@ public class GridViewFragment extends Fragment {
                 getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.CANCEL.ordinal());
 
                 Fragment newFragment = new ProductDetailsFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack
+                transaction.replace(R.id.main_frag_container, newFragment);
+                transaction.addToBackStack(null);
+                // Commit the transaction
+                transaction.commit();
+            }
+        });
+
+        Button addProductButton = (Button) view.findViewById(R.id.grid_view_add_product);
+        addProductButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TAG", "GridViewFragment - clicked on add product");
+
+                Fragment newFragment = new NewProductFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 // Replace whatever is in the fragment_container view with this fragment,
@@ -129,17 +147,14 @@ public class GridViewFragment extends Fragment {
             }
 
             //set params of each item
-            image = (ImageView) convertView.findViewById(R.id.grid_item_image);
-            int imagerResource = R.drawable.image;
-            Drawable res = getResources().getDrawable(imagerResource);
-            image.setImageDrawable(res);
-
             Product localProduct = data.get(position);
             if(localProduct == null)
                 return  convertView;
 
             text = (TextView) convertView.findViewById(R.id.grid_item_text);
+            image = (ImageView) convertView.findViewById(R.id.grid_item_image);
             text.setText(""+localProduct.getId());
+            image.setImageBitmap(localProduct.getImageProduct());
             return convertView;
         }
     }
