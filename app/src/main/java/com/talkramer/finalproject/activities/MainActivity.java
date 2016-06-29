@@ -8,7 +8,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.fragments.GridViewFragment;
