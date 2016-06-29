@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/clothes_hanger_icon"
+        android:icon="@drawable/clothes_hanger"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:name=".ApplicationStartup"
