@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -161,5 +163,49 @@ public class GridViewActivity extends ActionBarActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_search_button, menu);
+//        getMenuInflater().inflate(R.menu.menu_home_button, menu);
+//        getMenuInflater().inflate(R.menu.menu_profile_button, menu);
+//        super.onCreateOptionsMenu(menu);
+//        return true;
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search: {
+//                NewStudentFragment newStudentFragment = new NewStudentFragment();
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.main_frag_container, newStudentFragment, "newStudentFragment");
+//                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.commit();
+                break;
+            }
+
+            case R.id.home: {
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                Fragment page = getSupportFragmentManager().findFragmentByTag("studentDetailsFragment");
+//                page.onOptionsItemSelected(item);
+                break;
+            }
+
+            case R.id.profile: {
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                Fragment page = getSupportFragmentManager().findFragmentByTag("studentDetailsFragment");
+//                page.onOptionsItemSelected(item);
+                break;
+            }
+
+            default:
+                return false;
+        }
+        return  false;
     }
 }

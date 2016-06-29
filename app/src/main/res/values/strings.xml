@@ -4,6 +4,10 @@
     <string name="title_activity_edit_product">Edit Product</string>
     <string name="title_activity_product_list">Product List</string>
     <string name="title_activity_product_details">Product Details</string>
+    <string name="menu_home_button">Home Page</string>
+    <string name="menu_search_button">Search</string>
+    <string name="menu_profile_button">My Profile</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

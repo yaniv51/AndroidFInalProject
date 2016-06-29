@@ -4,18 +4,18 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/clothes_hanger_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:name=".ApplicationStartup"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true"
+        android:uiOptions="splitActionBarWhenNarrow">
+
         <uses-feature android:name="android.hardware.camera"
             android:required="true" />
-        <activity
-            android:name=".NewProductActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

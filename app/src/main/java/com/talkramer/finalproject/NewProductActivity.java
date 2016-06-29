@@ -7,6 +7,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -162,25 +163,47 @@ public class NewProductActivity extends ActionBarActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_search_button, menu);
+//        getMenuInflater().inflate(R.menu.menu_home_button, menu);
+//        getMenuInflater().inflate(R.menu.menu_profile_button, menu);
+//        super.onCreateOptionsMenu(menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.search: {
+//                NewStudentFragment newStudentFragment = new NewStudentFragment();
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.main_frag_container, newStudentFragment, "newStudentFragment");
+//                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.commit();
+                break;
+            }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.home: {
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                Fragment page = getSupportFragmentManager().findFragmentByTag("studentDetailsFragment");
+//                page.onOptionsItemSelected(item);
+                break;
+            }
+
+            case R.id.profile: {
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                Fragment page = getSupportFragmentManager().findFragmentByTag("studentDetailsFragment");
+//                page.onOptionsItemSelected(item);
+                break;
+            }
+
+            default:
+                return false;
         }
-
-        return super.onOptionsItemSelected(item);
+        return  false;
     }
 }
