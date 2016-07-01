@@ -12,6 +12,6 @@ public class ModelCloudinary {
 
     public ModelCloudinary(Context context)
     {
-        cloudinary = new Cloudinary("CLOUDINARY_URL=cloudinary://796956498877215:54yr5DOPhb2DUFJigNxgXf9PGYE@dugje2rt7");
+        cloudinary = new Cloudinary("cloudinary://796956498877215:54yr5DOPhb2DUFJigNxgXf9PGYE@dugje2rt7");
     }
 }
