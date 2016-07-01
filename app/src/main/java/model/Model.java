@@ -2,6 +2,8 @@ package model;
 
 import android.graphics.Bitmap;
 
+import com.talkramer.finalproject.ApplicationStartup;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,12 +14,14 @@ public class Model {
 
     private static Model instance;
     private Bitmap image;
+    private ModelFirebase firebase;
 
     List<Product> data;
 
     private Model()
     {
         data = new LinkedList<Product>();
+        firebase = new ModelFirebase(ApplicationStartup.getAppContext());
         init();
     }
 

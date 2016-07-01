@@ -8,6 +8,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:icon="@drawable/clothes_hanger"
         android:name=".ApplicationStartup"
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true"
@@ -15,6 +16,7 @@
 
         <uses-feature android:name="android.hardware.camera"
             android:required="true" />
+        <uses-permission android:name="android.permission.INTERNET" />
         <activity android:name=".activities.MainActivity"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

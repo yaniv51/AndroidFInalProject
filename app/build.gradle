@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.dsl.PackagingOptions
+
 apply plugin: 'com.android.application'
 
 android {
@@ -17,6 +19,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
@@ -25,4 +33,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.firebase:firebase-client-android:2.5.2+'
 }
