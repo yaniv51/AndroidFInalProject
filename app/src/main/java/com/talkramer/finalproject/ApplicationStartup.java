@@ -19,6 +19,7 @@ public class ApplicationStartup extends Application {
         super.onCreate();
         Log.d("TAG", "first exec");
         context = getApplicationContext();
+
         //initialize model
         Model.getInstance();
 

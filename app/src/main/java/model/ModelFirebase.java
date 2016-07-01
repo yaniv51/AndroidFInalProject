@@ -14,9 +14,10 @@ public class ModelFirebase {
 
     ModelFirebase(Context context) {
         try {
-            //Firebase.setAndroidContext(context);
+            Firebase.setAndroidContext(context);
             myFirebase = new Firebase("https://finalproject-23ce7.firebaseio.com/");
-            //myFirebase.setAndroidContext(context);
+
+            //test
             myFirebase.child("message").setValue("Do you have data? You'll love Firebase.");
         }
         catch (Exception ex) {
