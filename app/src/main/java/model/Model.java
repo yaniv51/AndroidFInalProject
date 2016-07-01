@@ -15,6 +15,7 @@ public class Model {
     private static Model instance;
     private Bitmap image;
     private ModelFirebase firebase;
+    private ModelCloudinary cloudinary;
 
     List<Product> data;
 
@@ -22,6 +23,7 @@ public class Model {
     {
         data = new LinkedList<Product>();
         firebase = new ModelFirebase(ApplicationStartup.getAppContext());
+        cloudinary = new ModelCloudinary(ApplicationStartup.getAppContext());
         init();
     }
 
