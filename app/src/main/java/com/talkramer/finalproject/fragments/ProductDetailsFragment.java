@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
 
-import model.Helper;
+import model.Utils.Helper;
 import model.Model;
-import model.Product;
+import model.Domain.Product;
 
 /**
  * A simple {@link Fragment} subclass.

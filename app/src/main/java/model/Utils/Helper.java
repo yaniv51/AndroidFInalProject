@@ -1,4 +1,4 @@
-package model;
+package model.Utils;
 
 /**
  * Created by Yaniv on 08/06/16.

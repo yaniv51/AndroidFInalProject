@@ -2,6 +2,7 @@ package com.talkramer.finalproject.fragments;
 
 
 import android.app.FragmentTransaction;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -13,15 +14,16 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
 
 import java.util.List;
 
-import model.Helper;
+import model.Utils.Helper;
 import model.Model;
-import model.Product;
+import model.Domain.Product;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -133,17 +135,13 @@ public class GridViewFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView image;
             TextView text;
 
             if (convertView == null) {
                 //if it's not recycled, initialize
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 convertView = inflater.inflate(R.layout.grid_item_layout, null);
-                //Log.d("TAG", "create view:" + position);
-                image = (ImageView) convertView.findViewById(R.id.grid_item_image);
             } else {
-                //Log.d("TAG", "use convert view:" + position);
             }
 
             //set params of each item
@@ -152,10 +150,27 @@ public class GridViewFragment extends Fragment {
                 return  convertView;
 
             text = (TextView) convertView.findViewById(R.id.grid_item_text);
-            image = (ImageView) convertView.findViewById(R.id.grid_item_image);
+            final ImageView image = (ImageView) convertView.findViewById(R.id.grid_item_image);
             text.setText(""+localProduct.getId());
-            image.setImageBitmap(localProduct.getImageProduct());
+            if(localProduct.getImageProductLink() != null)
+            {
+                //Log.d("TAG","list gets image " + localProduct.getImageProductLink());
+                final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.grid_item_progressbar);
+                progress.setVisibility(View.VISIBLE);
+                Model.getInstance().loadImage(localProduct.getImageProductLink(),new Model.LoadImageListener() {
+                    @Override
+                    public void onResult(Bitmap imageBmp) {
+                        setImage(image, progress, imageBmp);
+                    }
+                });
+            }
             return convertView;
+        }
+
+        private void setImage(final ImageView imageView, final ProgressBar imageProgress, final Bitmap image)
+        {
+            imageProgress.setVisibility(View.GONE);
+            imageView.setImageBitmap(image);
         }
     }
 }

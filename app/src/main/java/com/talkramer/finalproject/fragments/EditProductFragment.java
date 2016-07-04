@@ -23,9 +23,9 @@ import android.widget.Spinner;
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.dialogs.SaveOperationDialog;
 
-import model.Helper;
+import model.Utils.Helper;
 import model.Model;
-import model.Product;
+import model.Domain.Product;
 
 
 /**

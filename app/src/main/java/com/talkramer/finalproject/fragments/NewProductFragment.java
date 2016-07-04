@@ -23,9 +23,9 @@ import android.widget.Spinner;
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.dialogs.SaveOperationDialog;
 
-import model.Helper;
+import model.Utils.Helper;
 import model.Model;
-import model.Product;
+import model.Domain.Product;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -147,7 +147,7 @@ public class NewProductFragment extends Fragment {
 
     public boolean updateProduct()
     {
-        String description, stringPrice, sellerId;
+        String description, stringPrice, sellerId, newProductId;
         Helper.Customers customer = Helper.Customers.MEN;
         Helper.ProductType type;
         Product newProduct;
@@ -182,11 +182,11 @@ public class NewProductFragment extends Fragment {
                 type = Helper.ProductType.OTHER;
                 break;
         }
-
+        newProductId = Model.getInstance().getNewProductId();
         //if failed to create new Id or parse price
         try {
             price = Integer.parseInt(stringPrice);
-            newProduct = new Product(Model.getInstance().getNewProductId(), type, description, price, customer, "NewImage", sellerId, image);
+            newProduct = new Product(newProductId, type, description, price, customer, "NewImage"+newProductId, sellerId, image);
         }
         catch (Exception ex)
         {
