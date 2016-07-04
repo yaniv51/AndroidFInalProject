@@ -1,27 +1,23 @@
 package com.talkramer.finalproject.activities;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.firebase.client.Firebase;
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.fragments.GridViewFragment;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
-        getSupportActionBar().setTitle(Html.fromHtml("<font color='#FF8A11'>My Little Shop</font>"));
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
+        //getSupportActionBar().setTitle(Html.fromHtml("<font color='#FF8A11'>My Little Shop</font>"));
 
         GridViewFragment frag = new GridViewFragment();
 
@@ -42,11 +38,10 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search_button, menu);
-        getMenuInflater().inflate(R.menu.menu_home_button, menu);
-        getMenuInflater().inflate(R.menu.menu_profile_button, menu);
-        super.onCreateOptionsMenu(menu);
-        return true;
+        //getMenuInflater().inflate(R.menu.menu_search_button, menu);
+        //getMenuInflater().inflate(R.menu.menu_home_button, menu);
+        //getMenuInflater().inflate(R.menu.menu_profile_button, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
