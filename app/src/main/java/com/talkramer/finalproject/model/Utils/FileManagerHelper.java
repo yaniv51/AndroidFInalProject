@@ -1,4 +1,4 @@
-package model.Utils;
+package com.talkramer.finalproject.model.Utils;
 
 import android.content.Context;
 import android.content.Intent;

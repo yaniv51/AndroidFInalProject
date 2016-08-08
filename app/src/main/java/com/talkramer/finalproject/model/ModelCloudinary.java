@@ -1,4 +1,4 @@
-package model;
+package com.talkramer.finalproject.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.fasterxml.jackson.core.util.BufferRecycler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

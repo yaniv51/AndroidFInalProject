@@ -1,25 +1,21 @@
-package model;
+package com.talkramer.finalproject.model;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
 import com.talkramer.finalproject.ApplicationStartup;
+import com.talkramer.finalproject.model.Domain.Product;
+import com.talkramer.finalproject.model.Utils.Helper;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import model.Domain.Product;
-import model.Utils.FileManagerHelper;
-import model.Utils.Helper;
-
-/**
- * Created by Yaniv on 08/06/16.
- */
+import com.talkramer.finalproject.model.Utils.FileManagerHelper;
 public class Model {
 
     private static Model instance;
     private Bitmap image;
-    private ModelFirebase firebase;
+    private ModelFirebase firebaseModel;
     private ModelCloudinary cloudinary;
     private static boolean imageBool;
     private FileManagerHelper fileManager;
@@ -29,7 +25,7 @@ public class Model {
     private Model()
     {
         data = new LinkedList<Product>();
-        firebase = new ModelFirebase(ApplicationStartup.getAppContext());
+        firebaseModel = new ModelFirebase(ApplicationStartup.getAppContext());
         cloudinary = new ModelCloudinary(ApplicationStartup.getAppContext());
         fileManager = new FileManagerHelper(ApplicationStartup.getAppContext());
         init();
@@ -108,7 +104,7 @@ public class Model {
     {
         data.add(newProduct);
         cloudinary.uploadImage(newProduct.getImageProductLink(), newProduct.getImageProduct());
-        fileManager.saveImageToFile(newProduct.getImageProduct(),newProduct.getImageProductLink());
+        fileManager.saveImageToFile(newProduct.getImageProduct(), newProduct.getImageProductLink());
     }
 
     public Product getProduct(String id){
@@ -170,5 +166,33 @@ public class Model {
 
     public interface LoadImageListener{
         public void onResult(Bitmap imageBmp);
+    }
+
+    public class AddProductListener {
+        void done(Product pr) {
+
+        }
+    }
+
+    public void add(Product pr, AddProductListener listener) {
+        firebaseModel.add(pr, listener);
+    }
+
+    public class GetProductListener {
+        void done(Product pr) {
+
+        }
+    }
+
+    public void getProduct(String id, GetProductListener listener) {
+        firebaseModel.getProduct(id, listener);
+    }
+
+    public interface GetProductsListener {
+        void done(List<Product> prList);
+    }
+
+    public void getProducts(GetProductsListener listener) {
+        firebaseModel.getProducts(listener);
     }
 }

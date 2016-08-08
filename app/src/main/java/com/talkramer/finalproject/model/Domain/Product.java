@@ -1,8 +1,8 @@
-package model.Domain;
+package com.talkramer.finalproject.model.Domain;
 
 import android.graphics.Bitmap;
 
-import model.Utils.Helper;
+import com.talkramer.finalproject.model.Utils.Helper;
 
 public class Product {
 

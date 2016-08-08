@@ -4,7 +4,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
         applicationId "com.talkramer.finalproject"
@@ -28,12 +28,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:19.1.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.android.support:support-v4:19.1.0'
-    compile 'com.firebase:firebase-client-android:2.5.2+'
     compile files('libs/cloudinary-android-1.2.2.jar')
     compile files('libs/cloudinary-core-1.2.2.jar')
+    compile files('libs/firebase-client-android-2.5.2.jar')
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:appcompat-v7:19.0.0+'
+    compile 'com.android.support:support-v4:19.0.0+'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

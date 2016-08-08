@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import model.Model;
+import com.talkramer.finalproject.model.Model;
 
 /**
  * Created by Yaniv on 29/06/2016.

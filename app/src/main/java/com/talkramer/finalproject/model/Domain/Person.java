@@ -1,4 +1,4 @@
-package model.Domain;
+package com.talkramer.finalproject.model.Domain;
 
 import java.util.LinkedList;
 import java.util.List;

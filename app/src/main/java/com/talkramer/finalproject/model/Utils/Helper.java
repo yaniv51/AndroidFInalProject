@@ -1,4 +1,4 @@
-package model.Utils;
+package com.talkramer.finalproject.model.Utils;
 
 /**
  * Created by Yaniv on 08/06/16.
