@@ -186,7 +186,7 @@ public class NewProductFragment extends Fragment {
         //if failed to create new Id or parse price
         try {
             price = Integer.parseInt(stringPrice);
-            newProduct = new Product(newProductId, type, description, price, customer, "NewImage"+newProductId, sellerId, image);
+            newProduct = new Product(newProductId, type, description, price, customer, sellerId, image);
         }
         catch (Exception ex)
         {

@@ -2,6 +2,7 @@ package com.talkramer.finalproject.model;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.model.Domain.Product;
@@ -14,11 +15,11 @@ import com.talkramer.finalproject.model.Utils.FileManagerHelper;
 public class Model {
 
     private static Model instance;
-    private Bitmap image;
     private ModelFirebase firebaseModel;
     private ModelCloudinary cloudinary;
-    private static boolean imageBool;
     private FileManagerHelper fileManager;
+
+    private boolean firstInit = false;
 
     List<Product> data;
 
@@ -28,7 +29,16 @@ public class Model {
         firebaseModel = new ModelFirebase(ApplicationStartup.getAppContext());
         cloudinary = new ModelCloudinary(ApplicationStartup.getAppContext());
         fileManager = new FileManagerHelper(ApplicationStartup.getAppContext());
-        init();
+
+        //init();
+    }
+
+    public static Model getInstance()
+    {
+        if(instance == null)
+            instance = new Model();
+
+        return instance;
     }
 
     public void loadImage(final String imageName, final LoadImageListener listener) {
@@ -48,31 +58,45 @@ public class Model {
             }
             @Override
             protected void onPostExecute(Bitmap result) {
-                listener.onResult(result);
+                listener.onResult(imageName, result);
             }
         };
         task.execute();
     }
 
-    public void SetLocalBitmap(Bitmap image)
+    public void getAllProductsAsync(final GetProductsListenerInterface listener)
     {
-        this.image = image;
-        for(int i=0; i<data.size(); i++)
-            data.get(i).setImageProduct(image);
-
-        cloudinary.uploadImage(data.get(0).getImageProductLink(), data.get(0).getImageProduct());
-    }
-
-    public static Model getInstance()
-    {
-        if(instance == null)
-            instance = new Model();
-
-        return instance;
+        if(!firstInit)
+        {
+            final String lastUpdateDate = "";//StudentSql.getLastUpdateDate(modelSql.getReadbleDB());
+            firebaseModel.getAllProductsAsync(new GetProductsListenerInterface() {
+                @Override
+                public void done(List<Product> products) {
+                    if(products != null && products.size() > 0) {
+                        data = products;
+                        //TODO: update the local DB
+                        /*String reacentUpdate = lastUpdateDate;
+                        for (Student s : students) {
+                            StudentSql.add(modelSql.getWritableDB(), s);
+                            if (reacentUpdate == null || s.getLastUpdated().compareTo(reacentUpdate) > 0) {
+                                reacentUpdate = s.getLastUpdated();
+                            }
+                            Log.d("TAG","updating: " + s.toString());
+                        }
+                        StudentSql.setLastUpdateDate(modelSql.getWritableDB(), reacentUpdate);*/
+                    }
+                    //return the complete student list to the caller
+                    //List<Product> res = StudentSql.getAllStudents(modelSql.getReadbleDB());
+                    listener.done(products);
+                }
+            });
+        }
+        else
+            init();
     }
 
     private void init() {
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 2; i++) {
             Helper.ProductType type;
             Helper.Customers customer;
             Product product;
@@ -93,7 +117,7 @@ public class Model {
             else
                 type = Helper.ProductType.OTHER;
 
-            product = new Product("" + i, type, "Description: " + i, 12 + i, customer, "testImage", "sellerId: "+i, image);
+            product = new Product("" + i, type, "Description: " + i, 12 + i, customer, "sellerId: "+i, null);
 
             add(product);
 
@@ -103,8 +127,24 @@ public class Model {
     public void add(Product newProduct)
     {
         data.add(newProduct);
-        cloudinary.uploadImage(newProduct.getImageProductLink(), newProduct.getImageProduct());
-        fileManager.saveImageToFile(newProduct.getImageProduct(), newProduct.getImageProductLink());
+        cloudUpdate(newProduct);
+        cachUpdate(newProduct);
+    }
+
+    private void cloudUpdate(Product newProduct)
+    {
+        firebaseModel.add(newProduct, new AddProductListener() {
+            @Override
+            public void done(Product pr) {
+                Log.d("TAG", "Finish add product " + pr.getId());
+            }
+        });
+        cloudinary.uploadImage(newProduct.getId(), newProduct.getImageProduct());
+    }
+
+    private void cachUpdate(Product newProduct)
+    {
+        fileManager.saveImageToFile(newProduct.getImageProduct(), newProduct.getId());
     }
 
     public Product getProduct(String id){
@@ -129,10 +169,10 @@ public class Model {
                 product.setDescription(newProduct.getDescription());
                 product.setPrice(newProduct.getPrice());
                 product.setForWhom(newProduct.getForWhom());
-                product.setImageProductLink(newProduct.getImageProductLink());
                 product.setImageProduct(newProduct.getImageProduct());
                 //TODO: check if update works
-                cloudinary.uploadImage(newProduct.getImageProductLink(), newProduct.getImageProduct());
+                cloudUpdate(product);
+                cachUpdate(product);
             }
         }
     }
@@ -143,8 +183,10 @@ public class Model {
 
     public void delete(Product product){
         data.remove(product);
-        //TODO
-        //cloudinary.removeImage(newProduct.getImageProductLink(), newProduct.getImageProduct());
+        firebaseModel.remove(product);
+        //TODO: check if cannot use remove on cloudinary because only the admin can remove an object
+        //cloudinary.removeImage(product.getId());
+        fileManager.removeImage(product.getId());
     }
 
     public String getNewProductId()
@@ -164,35 +206,36 @@ public class Model {
         return  ""+newId;
     }
 
-    public interface LoadImageListener{
-        public void onResult(Bitmap imageBmp);
-    }
-
-    public class AddProductListener {
-        void done(Product pr) {
-
-        }
-    }
-
     public void add(Product pr, AddProductListener listener) {
         firebaseModel.add(pr, listener);
     }
 
-    public class GetProductListener {
-        void done(Product pr) {
-
-        }
-    }
-
-    public void getProduct(String id, GetProductListener listener) {
+    /*public void getProduct(String id, GetProductListener listener) {
         firebaseModel.getProduct(id, listener);
+    }*/
+
+    public void getProducts(GetProductsListenerInterface listener) {
+        firebaseModel.getAllProductsAsync(listener);
     }
 
-    public interface GetProductsListener {
+    public void login(String email, String password, AuthListener listener)
+    {
+        firebaseModel.login(email, password, listener);
+    }
+
+    public interface GetProductsListenerInterface {
         void done(List<Product> prList);
     }
 
-    public void getProducts(GetProductsListener listener) {
-        firebaseModel.getProducts(listener);
+    public interface AddProductListener {
+        void done(Product pr);
+    }
+
+    public interface LoadImageListener{
+        void onResult(String id, Bitmap imageBmp);
+    }
+
+    public interface AuthListener{
+        void onDone(String userId, Exception e);
     }
 }

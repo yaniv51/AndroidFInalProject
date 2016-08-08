@@ -230,7 +230,7 @@ public class EditProductFragment extends Fragment {
         else
             localImage = newImage;
 
-        newProduct = new Product(currentProduct.getId(), type, description, price , customer, currentProduct.getImageProductLink(),sellerId, localImage);
+        newProduct = new Product(currentProduct.getId(), type, description, price , customer,sellerId, localImage);
 
         Model.getInstance().updateProductInformation(currentProduct.getId(), newProduct);
         return  true;

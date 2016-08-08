@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import com.firebase.client.Firebase;
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.fragments.GridViewFragment;
+import com.talkramer.finalproject.model.Model;
 
 public class MainActivity extends Activity {
 

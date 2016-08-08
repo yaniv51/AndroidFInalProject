@@ -40,7 +40,6 @@ public class ModelCloudinary {
                     image.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                     byte[] bitmapdata = bos.toByteArray();
                     ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
-                    //String name = imageName.substring(0,imageName.lastIndexOf("."));
                     Map res = null;
                     try {
                         res = cloudinary.uploader().upload(bs, ObjectUtils.asMap("public_id", imageName));
@@ -74,5 +73,16 @@ public class ModelCloudinary {
         Log.d("TAG", "url" + url);
 
         return null;
+    }
+
+    public void removeImage(String name)
+    {
+        try {
+            cloudinary.uploader().destroy(name, null);
+            Log.d("TAG", "remove image" + name);
+        } catch (IOException e) {
+            Log.d("TAG", "Remove image failed - " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

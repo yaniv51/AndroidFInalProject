@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1094848883232",
+    "firebase_url": "https://finalproject-23ce7.firebaseio.com",
+    "project_id": "finalproject-23ce7",
+    "storage_bucket": "finalproject-23ce7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094848883232:android:37f8e4b82a32c42e",
+        "android_client_info": {
+          "package_name": "com.talkramer.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094848883232-av665k3bukmkmllgsg6jgsdarhi744ib.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-qunkcZOLJUG8ObkcDq2bBAsDMYqAhQ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

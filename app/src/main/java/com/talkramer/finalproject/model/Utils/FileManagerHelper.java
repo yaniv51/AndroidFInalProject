@@ -60,9 +60,13 @@ public class FileManagerHelper {
             File imageFile = new File(dir,imageFileName);
             if(imageFile.exists())
             {
-                //TODO: update image that already exist
-                Log.d("TAG", "image already exist, update image");
-                return;
+                boolean deleted = imageFile.delete();
+                if(!deleted)
+                {
+                    Log.d("TAG", "image already exist, could not update image");
+                    return;
+                }
+                Log.d("TAG", "image already exist,  update image");
             }
             imageFile.createNewFile();
             out = new FileOutputStream(imageFile);
@@ -83,5 +87,11 @@ public class FileManagerHelper {
             Log.d("TAG", "General exception on save image "+imageFileName);
             e.printStackTrace();
         }
+    }
+
+    //TODO: implement function
+    public void removeImage(String imageName)
+    {
+
     }
 }

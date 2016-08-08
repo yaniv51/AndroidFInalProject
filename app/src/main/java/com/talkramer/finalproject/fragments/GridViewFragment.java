@@ -34,6 +34,8 @@ public class GridViewFragment extends Fragment {
     List<Product> data;
     ImageAdapter imageAadapter;
 
+    ProgressBar progressBar;
+
     public GridViewFragment() {
         // Required empty public constructor
     }
@@ -48,6 +50,9 @@ public class GridViewFragment extends Fragment {
 
         data = Model.getInstance().getProducts();
         imageAadapter = new ImageAdapter();
+
+        //TODO: add progressbar
+        progressBar = (ProgressBar)view.findViewById(R.id.mainProgressBar);
 
         grid.setAdapter(imageAadapter);
 
@@ -90,8 +95,42 @@ public class GridViewFragment extends Fragment {
             }
         });
 
+        firstInit();
+
         return view;
     }
+
+    private void firstInit()
+    {
+        //TODO: add listener to log in
+        Model.getInstance().login("yaniv.israel@gmail.com", "123456", new Model.AuthListener() {
+            @Override
+            public void onDone(String userId, Exception e) {
+                if (e == null){
+                    Log.d("TAG", "login success");
+                    loadProductsData();
+
+                }else{
+                    Log.d("TAG",e.getMessage());
+                    //TODO: handle case of fail on login
+                }
+            }
+        });
+    }
+
+    private void loadProductsData()
+    {
+        progressBar.setVisibility(View.VISIBLE);
+        Model.getInstance().getAllProductsAsync(new Model.GetProductsListenerInterface() {
+            @Override
+            public void done(List<Product> students) {
+                progressBar.setVisibility(View.GONE);
+                data = students;
+                imageAadapter.notifyDataSetChanged();
+            }
+        });
+    }
+
 
     @Override
     public void onResume() {
@@ -145,24 +184,31 @@ public class GridViewFragment extends Fragment {
             }
 
             //set params of each item
-            Product localProduct = data.get(position);
+            final Product localProduct = data.get(position);
             if(localProduct == null)
                 return  convertView;
 
             text = (TextView) convertView.findViewById(R.id.grid_item_text);
             final ImageView image = (ImageView) convertView.findViewById(R.id.grid_item_image);
             text.setText(""+localProduct.getId());
-            if(localProduct.getImageProductLink() != null)
+
+            //if image is null - load online image
+            if(localProduct.getImageProduct() == null)
             {
-                //Log.d("TAG","list gets image " + localProduct.getImageProductLink());
+                Log.d("TAG","list gets image " + localProduct.getId());
                 final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.grid_item_progressbar);
                 progress.setVisibility(View.VISIBLE);
-                Model.getInstance().loadImage(localProduct.getImageProductLink(),new Model.LoadImageListener() {
+                Model.getInstance().loadImage(localProduct.getId(),new Model.LoadImageListener() {
                     @Override
-                    public void onResult(Bitmap imageBmp) {
+                    public void onResult(String id, Bitmap imageBmp) {
+                        localProduct.setImageProduct(imageBmp);
                         setImage(image, progress, imageBmp);
                     }
                 });
+            }
+            else
+            {
+                image.setImageBitmap(localProduct.getImageProduct());
             }
             return convertView;
         }
