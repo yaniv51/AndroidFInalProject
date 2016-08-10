@@ -71,14 +71,6 @@ public class ModelFirebase {
 
     public void add(Product pr, Model.AddProductListener listener) {
         try {
-            SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String date = null;
-            date = dateFormatGmt.format(new Date()).toString();
-
-            pr.setLastUpdated(date);
-
             Firebase prRef = myFirebase.child("product").child(pr.getId());
 
             //use product wrapper for upload product object without Bitmap
@@ -93,10 +85,17 @@ public class ModelFirebase {
         }
     }
 
-    public void remove(Product product)
+    public void remove(final Product product)
     {
-        Firebase prRef = myFirebase.child("product").child(product.getId());
-        prRef.removeValue();
+        product.setDeleted(true);
+        add(product, new Model.AddProductListener() {
+            @Override
+            public void done(Product pr) {
+                Log.d("TAG", "Product " + product.getId()+ " marked as deleted");
+            }
+        });
+        //Firebase prRef = myFirebase.child("product").child(product.getId());
+        //prRef.removeValue();
     }
 
     public void getProduct(String id, final Model.GetProductsListenerInterface listener) {

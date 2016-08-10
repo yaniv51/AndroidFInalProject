@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
+import com.talkramer.finalproject.model.Model;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * Created by Yaniv on 04/07/2016.
@@ -28,12 +31,21 @@ public class FileManagerHelper {
     }
 
 
-    public Bitmap loadImageFromFile(String imageFileName){
+    public Bitmap loadImageFromFile(String imageFileName, String lastModifiedObject){
         String str = null;
         Bitmap bitmap = null;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             File imageFile = new File(dir,imageFileName);
+
+            Date lastModified = new Date(imageFile.lastModified());
+            String date = Model.getInstance().formatDateToString(lastModified);
+
+            if( lastModifiedObject != null && lastModifiedObject.compareTo(date) > 0)
+            {
+                Log.d("TAG", "load image - object from cloud is newer");
+                return bitmap;
+            }
 
             InputStream inputStream = new FileInputStream(imageFile);
             bitmap = BitmapFactory.decodeStream(inputStream);
@@ -51,6 +63,8 @@ public class FileManagerHelper {
     public void saveImageToFile(Bitmap imageBitmap, String imageFileName){
         FileOutputStream fos;
         OutputStream out = null;
+        if(imageBitmap == null)
+            return;;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES);

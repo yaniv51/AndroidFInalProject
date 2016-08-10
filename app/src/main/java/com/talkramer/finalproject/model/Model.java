@@ -6,10 +6,14 @@ import android.util.Log;
 
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.model.Domain.Product;
+import com.talkramer.finalproject.model.Domain.ProductSql;
 import com.talkramer.finalproject.model.Utils.Helper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 
 import com.talkramer.finalproject.model.Utils.FileManagerHelper;
 public class Model {
@@ -18,6 +22,7 @@ public class Model {
     private ModelFirebase firebaseModel;
     private ModelCloudinary cloudinary;
     private FileManagerHelper fileManager;
+    private ModelSql sqlModel;
 
     private boolean firstInit = false;
 
@@ -29,8 +34,9 @@ public class Model {
         firebaseModel = new ModelFirebase(ApplicationStartup.getAppContext());
         cloudinary = new ModelCloudinary(ApplicationStartup.getAppContext());
         fileManager = new FileManagerHelper(ApplicationStartup.getAppContext());
+        sqlModel = new ModelSql(ApplicationStartup.getAppContext());
 
-        //init();
+        //ProductSql.drop(sqlModel.getWritableDB());
     }
 
     public static Model getInstance()
@@ -41,12 +47,13 @@ public class Model {
         return instance;
     }
 
-    public void loadImage(final String imageName, final LoadImageListener listener) {
+    public void loadImage(final Product product, final LoadImageListener listener) {
+        final String  imageName = product.getId();
         AsyncTask<String,String,Bitmap> task = new AsyncTask<String, String, Bitmap >() {
             @Override
             protected Bitmap doInBackground(String... params) {
-                //first try to fin the image on the device
-                Bitmap bmp = fileManager.loadImageFromFile(imageName);
+                //first try to find the image on the device - use last updated for verify image is updated
+                Bitmap bmp = fileManager.loadImageFromFile(imageName, product.getLastUpdated());
 
                 if (bmp == null) {
                     bmp = cloudinary.loadImage(imageName);
@@ -68,26 +75,30 @@ public class Model {
     {
         if(!firstInit)
         {
-            final String lastUpdateDate = "";//StudentSql.getLastUpdateDate(modelSql.getReadbleDB());
+            final String lastUpdateDate = ProductSql.getLastUpdateDate(sqlModel.getReadbleDB());
             firebaseModel.getAllProductsAsync(new GetProductsListenerInterface() {
                 @Override
                 public void done(List<Product> products) {
+                    List<Product> res = null;
                     if(products != null && products.size() > 0) {
-                        data = products;
-                        //TODO: update the local DB
-                        /*String reacentUpdate = lastUpdateDate;
-                        for (Student s : students) {
-                            StudentSql.add(modelSql.getWritableDB(), s);
-                            if (reacentUpdate == null || s.getLastUpdated().compareTo(reacentUpdate) > 0) {
-                                reacentUpdate = s.getLastUpdated();
+                        //update the local DB
+                        String reacentUpdate = lastUpdateDate;
+                        for (Product p : products) {
+                            //update DB and image cach
+                            cachUpdate(p);
+                            if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
+                                reacentUpdate = p.getLastUpdated();
                             }
-                            Log.d("TAG","updating: " + s.toString());
+                            Log.d("TAG","updating: " + p.toString());
                         }
-                        StudentSql.setLastUpdateDate(modelSql.getWritableDB(), reacentUpdate);*/
+                        ProductSql.setLastUpdateDate(sqlModel.getWritableDB(), reacentUpdate);
+                        res = ProductSql.getAllProducts(sqlModel.getReadbleDB());
                     }
-                    //return the complete student list to the caller
-                    //List<Product> res = StudentSql.getAllStudents(modelSql.getReadbleDB());
-                    listener.done(products);
+                    //return the complete product list to the caller
+                    if(res == null)
+                        res = new LinkedList<Product>();
+                    data = res;
+                    listener.done(res);
                 }
             });
         }
@@ -120,15 +131,29 @@ public class Model {
             product = new Product("" + i, type, "Description: " + i, 12 + i, customer, "sellerId: "+i, null);
 
             add(product);
-
         }
     }
 
     public void add(Product newProduct)
     {
+        newProduct.setLastUpdated(getCurrentDate());
+
         data.add(newProduct);
         cloudUpdate(newProduct);
         cachUpdate(newProduct);
+    }
+
+    public String getCurrentDate()
+    {
+        return formatDateToString(new Date());
+    }
+
+    public String formatDateToString(Date date)
+    {
+        SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return  dateFormatGmt.format(date).toString();
     }
 
     private void cloudUpdate(Product newProduct)
@@ -145,6 +170,7 @@ public class Model {
     private void cachUpdate(Product newProduct)
     {
         fileManager.saveImageToFile(newProduct.getImageProduct(), newProduct.getId());
+        ProductSql.add(sqlModel.getWritableDB(), newProduct);
     }
 
     public Product getProduct(String id){
@@ -170,7 +196,7 @@ public class Model {
                 product.setPrice(newProduct.getPrice());
                 product.setForWhom(newProduct.getForWhom());
                 product.setImageProduct(newProduct.getImageProduct());
-                //TODO: check if update works
+                product.setLastUpdated(getCurrentDate());
                 cloudUpdate(product);
                 cachUpdate(product);
             }
@@ -184,9 +210,14 @@ public class Model {
     public void delete(Product product){
         data.remove(product);
         firebaseModel.remove(product);
+        fileManager.removeImage(product.getId());
+        boolean removed = ProductSql.deleteById(sqlModel.getWritableDB(), product.getId());
+        if(removed)
+        {
+
+        }
         //TODO: check if cannot use remove on cloudinary because only the admin can remove an object
         //cloudinary.removeImage(product.getId());
-        fileManager.removeImage(product.getId());
     }
 
     public String getNewProductId()
@@ -204,18 +235,6 @@ public class Model {
             newId = 1;
         }
         return  ""+newId;
-    }
-
-    public void add(Product pr, AddProductListener listener) {
-        firebaseModel.add(pr, listener);
-    }
-
-    /*public void getProduct(String id, GetProductListener listener) {
-        firebaseModel.getProduct(id, listener);
-    }*/
-
-    public void getProducts(GetProductsListenerInterface listener) {
-        firebaseModel.getAllProductsAsync(listener);
     }
 
     public void login(String email, String password, AuthListener listener)

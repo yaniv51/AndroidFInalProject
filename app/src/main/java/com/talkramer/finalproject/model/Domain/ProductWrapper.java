@@ -15,6 +15,7 @@ public class ProductWrapper {
     Helper.Customers forWhom;
     String sellerId;
     String lastUpdated;
+    boolean deleted;
 
 
     public ProductWrapper() { }
@@ -27,6 +28,8 @@ public class ProductWrapper {
         this.price = product.getPrice();
         this.forWhom = product.getForWhom();
         this.sellerId = product.getSellerId();
+        this.lastUpdated = product.getLastUpdated();
+        this.deleted = product.getDeleted();
     }
 
     public String getId() { return id; }
@@ -55,5 +58,11 @@ public class ProductWrapper {
 
     public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public boolean getDeleted() {return deleted;}
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

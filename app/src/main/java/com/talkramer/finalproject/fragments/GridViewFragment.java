@@ -33,6 +33,7 @@ public class GridViewFragment extends Fragment {
     GridView grid;
     List<Product> data;
     ImageAdapter imageAadapter;
+    private static boolean initialize = true;
 
     ProgressBar progressBar;
 
@@ -95,7 +96,10 @@ public class GridViewFragment extends Fragment {
             }
         });
 
-        firstInit();
+        if(initialize) {
+            firstInit();
+            initialize = false;
+        }
 
         return view;
     }
@@ -195,10 +199,10 @@ public class GridViewFragment extends Fragment {
             //if image is null - load online image
             if(localProduct.getImageProduct() == null)
             {
-                Log.d("TAG","list gets image " + localProduct.getId());
+                //Log.d("TAG","list gets image " + localProduct.getId());
                 final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.grid_item_progressbar);
                 progress.setVisibility(View.VISIBLE);
-                Model.getInstance().loadImage(localProduct.getId(),new Model.LoadImageListener() {
+                Model.getInstance().loadImage(localProduct,new Model.LoadImageListener() {
                     @Override
                     public void onResult(String id, Bitmap imageBmp) {
                         localProduct.setImageProduct(imageBmp);

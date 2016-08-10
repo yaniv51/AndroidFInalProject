@@ -14,6 +14,7 @@ public class Product {
     Bitmap imageProduct;
     String sellerId;
     String lastUpdated;
+    boolean deleted;
 
     public Product() { }
 
@@ -58,6 +59,12 @@ public class Product {
 
     public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public boolean getDeleted() {return deleted;}
+
+    public void setDeleted(boolean deleted){
+        this.deleted = deleted;
     }
 }
 
