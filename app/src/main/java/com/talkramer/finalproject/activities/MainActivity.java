@@ -69,6 +69,8 @@ public class MainActivity extends ActionBarActivity {
             case R.id.home: {
                 GridViewFragment frag = new GridViewFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                //clear fragment back stack
+                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 transaction.add(R.id.main_frag_container, frag, "GridViewFragment");
                 transaction.commit();
                 break;
@@ -81,6 +83,8 @@ public class MainActivity extends ActionBarActivity {
             case R.id.logout: {
                 SignInFragment frag = new SignInFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                //clear fragment back stack
+                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 transaction.add(R.id.main_frag_container, frag, "signInFragment");
                 transaction.commit();
                 break;
