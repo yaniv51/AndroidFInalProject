@@ -128,4 +128,12 @@
             android:layout_height="wrap_content"
             android:text="Cancel"/>
     </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_gravity="center"
+        android:id="@+id/new_product_progressbar"
+        android:visibility="gone"/>
 </FrameLayout>

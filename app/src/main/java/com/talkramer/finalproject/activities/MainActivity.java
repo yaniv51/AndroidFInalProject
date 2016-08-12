@@ -81,6 +81,7 @@ public class MainActivity extends ActionBarActivity {
             }
 
             case R.id.logout: {
+                Model.getInstance().logout();
                 SignInFragment frag = new SignInFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 //clear fragment back stack

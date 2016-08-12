@@ -91,7 +91,7 @@ public class SignInFragment extends Fragment {
                     @Override
                     public void ok(String email) {
                         progressBar.setVisibility(View.VISIBLE);
-                        Model.getInstance().resetPassword(email, new Model.SignupListener() {
+                        Model.getInstance().resetPassword(email, new Model.OperationListener() {
                             @Override
                             public void success() {
                                 progressBar.setVisibility(View.GONE);
@@ -129,7 +129,7 @@ public class SignInFragment extends Fragment {
     {
         progressBar.setVisibility(View.VISIBLE);
         setButtonsEnable(false);
-        Model.getInstance().signUp(email, password, new Model.SignupListener() {
+        Model.getInstance().signUp(email, password, new Model.OperationListener() {
             @Override
             public void success() {
                 showAlertDialog("You have been signed up successfully", true);
@@ -190,8 +190,6 @@ public class SignInFragment extends Fragment {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         transaction.replace(R.id.main_frag_container, frag);
-        //TODO: check what happens if prees back after list loaded
-        transaction.addToBackStack(null);
         // Commit the transaction
         transaction.commit();
     }

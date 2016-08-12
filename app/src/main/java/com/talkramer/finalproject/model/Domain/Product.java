@@ -31,6 +31,11 @@ public class Product {
 
     public String getId() { return id; }
 
+    public void setId(String newId)
+    {
+        this.id = newId;
+    }
+
     public Helper.ProductType getType() { return type; }
 
     public String getDescription() { return description; }

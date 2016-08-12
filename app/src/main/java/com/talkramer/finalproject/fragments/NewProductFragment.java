@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -38,6 +39,8 @@ public class NewProductFragment extends Fragment {
     private RadioButton menRadio, womenRadio, unisexRadio;
     private ImageButton imageButton;
     private Bitmap image;
+    private ProgressBar progressBar;
+    Button saveButton, cancleButton;
 
     public NewProductFragment() {
         // Required empty public constructor
@@ -50,36 +53,21 @@ public class NewProductFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_new_product, container, false);
 
-        Button save = (Button) view.findViewById(R.id.new_product_save);
-        Button cancel = (Button) view.findViewById(R.id.new_product_cancel);
+        saveButton = (Button) view.findViewById(R.id.new_product_save);
+        cancleButton = (Button) view.findViewById(R.id.new_product_cancel);
 
-        save.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!updateProduct())
                 {
-                    //if already in use and not by current student - show error message
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                    alertDialogBuilder.setMessage("Values are not valid. Try again");
-
-                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            return;
-                        }
-                    });
-
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+                    showErrorMessage("Values are not valid. Try again");
                     return;
                 }
-                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
-                Log.d("TAG", "NewProductFragment - Product has been created");
-                ShowSaveDialog();
             }
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
+        cancleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.CANCEL.ordinal());
@@ -95,6 +83,7 @@ public class NewProductFragment extends Fragment {
         womenRadio = (RadioButton) view.findViewById(R.id.new_product_radio_women);
         unisexRadio = (RadioButton) view.findViewById(R.id.new_product_radio_unisex);
         imageButton = (ImageButton) view.findViewById(R.id.new_product_imageView);
+        progressBar = (ProgressBar) view.findViewById(R.id.new_product_progressbar);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +99,23 @@ public class NewProductFragment extends Fragment {
         setSpinnerAdapter();
 
         return view;
+    }
+
+    private void showErrorMessage(String message)
+    {
+        //if already in use and not by current student - show error message
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setMessage(message);
+
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                return;
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     @Override
@@ -147,7 +153,7 @@ public class NewProductFragment extends Fragment {
 
     public boolean updateProduct()
     {
-        String description, stringPrice, sellerId, newProductId;
+        String description, stringPrice, sellerId;
         Helper.Customers customer = Helper.Customers.MEN;
         Helper.ProductType type;
         Product newProduct;
@@ -159,7 +165,7 @@ public class NewProductFragment extends Fragment {
 
         description = this.description.getText().toString();
         stringPrice = this.price.getText().toString();
-        sellerId = "NewSellerId";
+        sellerId = Model.getInstance().getUserId();
 
         customer = menRadio.isChecked()? Helper.Customers.MEN : customer;
         customer = womenRadio.isChecked()? Helper.Customers.WOMEN : customer;
@@ -182,18 +188,49 @@ public class NewProductFragment extends Fragment {
                 type = Helper.ProductType.OTHER;
                 break;
         }
-        newProductId = Model.getInstance().getNewProductId();
+
+
         //if failed to create new Id or parse price
         try {
             price = Integer.parseInt(stringPrice);
-            newProduct = new Product(newProductId, type, description, price, customer, sellerId, image);
+            newProduct = new Product(0+"", type, description, price, customer, sellerId, image);
         }
         catch (Exception ex)
         {
             return  false;
         }
 
-        Model.getInstance().add(newProduct);
+        setEnable(false);
+        Model.getInstance().add(newProduct, new Model.OperationListener() {
+            @Override
+            public void success() {
+                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
+                setEnable(true);
+                Log.d("TAG", "NewProductFragment - Product has been created");
+                ShowSaveDialog();
+            }
+
+            @Override
+            public void fail(String msg) {
+                setEnable(true);
+                showErrorMessage(msg);
+            }
+        });
         return  true;
+    }
+
+    private void setEnable(boolean enable)
+    {
+        if(enable)
+            progressBar.setVisibility(view.GONE);
+        else
+            progressBar.setVisibility(view.VISIBLE);
+
+        description.setEnabled(enable);
+        price.setEnabled(enable);
+        typeSpinner.setEnabled(enable);
+        saveButton.setEnabled(enable);
+        cancleButton.setEnabled(enable);
+        imageButton.setEnabled(enable);
     }
 }

@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -33,13 +34,15 @@ import com.talkramer.finalproject.model.Domain.Product;
  */
 public class EditProductFragment extends Fragment {
 
-    private EditText description, price, seller;
+    private EditText description, price;
     private Spinner typeSpinner;
     private RadioButton menRadio, womenRadio, unisexRadio;
     private ImageButton imageButton;
     private Product currentProduct;
     private View view;
     private Bitmap newImage;
+    private ProgressBar progressBar;
+    Button saveButton, cancelButton, deleteButton;
 
 
     public EditProductFragment() {
@@ -57,37 +60,23 @@ public class EditProductFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_edit_product, container, false);
         currentProduct = Model.getInstance().getProduct(productId);
 
-        Button save = (Button) view.findViewById(R.id.edit_product_save);
-        Button cancel = (Button) view.findViewById(R.id.edit_product_cancel);
-        Button delete = (Button) view.findViewById(R.id.edit_product_delete);
+        saveButton = (Button) view.findViewById(R.id.edit_product_save);
+        cancelButton = (Button) view.findViewById(R.id.edit_product_cancel);
+        deleteButton = (Button) view.findViewById(R.id.edit_product_delete);
 
-        save.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!updateProduct())
                 {
-                    //if already in use and not by current student - show error message
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                    alertDialogBuilder.setMessage("Values are not valid. Try again");
-
-                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            return;
-                        }
-                    });
-
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+                    showErrorMessage("Values are not valid. Try again");
                     return;
                 }
-                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
-                Log.d("TAG", "EditProductFragment - Product has been edited");
-                ShowSaveDialog();
+
             }
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.CANCEL.ordinal());
@@ -96,7 +85,7 @@ public class EditProductFragment extends Fragment {
             }
         });
 
-        delete.setOnClickListener(new View.OnClickListener() {
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.DELETE.ordinal());
@@ -107,12 +96,13 @@ public class EditProductFragment extends Fragment {
 
         description = (EditText) view.findViewById(R.id.edit_product_description);
         price = (EditText) view.findViewById(R.id.edit_product_price);
-        seller = (EditText) view.findViewById(R.id.edit_product_seller);
         typeSpinner = (Spinner) view.findViewById(R.id.edit_product_planets_spinner_type);
         menRadio = (RadioButton) view.findViewById(R.id.edit_product_radio_men);
         womenRadio = (RadioButton) view.findViewById(R.id.edit_product_radio_women);
         unisexRadio = (RadioButton) view.findViewById(R.id.edit_product_radio_unisex);
         imageButton = (ImageButton) view.findViewById(R.id.edit_product_details_imageView);
+
+        progressBar = (ProgressBar) view.findViewById(R.id.edit_product_progressbar);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +122,23 @@ public class EditProductFragment extends Fragment {
         return view;
     }
 
+    private void showErrorMessage(String message)
+    {
+        //if already in use and not by current student - show error message
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setMessage(message);
+
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                return;
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Helper.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
@@ -148,7 +155,6 @@ public class EditProductFragment extends Fragment {
         Helper.Customers customer;
         description.setText(currentProduct.getDescription());
         price.setText("" + currentProduct.getPrice());
-        seller.setText(currentProduct.getSellerId());
 
         customer = currentProduct.getForWhom();
         menRadio.setChecked(customer == Helper.Customers.MEN);
@@ -193,7 +199,7 @@ public class EditProductFragment extends Fragment {
 
         description = this.description.getText().toString();
         stringPrice = this.price.getText().toString();
-        sellerId = this.seller.getText().toString();
+        sellerId = currentProduct.getSellerId();
 
         customer = menRadio.isChecked()? Helper.Customers.MEN : customer;
         customer = womenRadio.isChecked()? Helper.Customers.WOMEN : customer;
@@ -232,7 +238,38 @@ public class EditProductFragment extends Fragment {
 
         newProduct = new Product(currentProduct.getId(), type, description, price , customer,sellerId, localImage);
 
-        Model.getInstance().updateProductInformation(currentProduct.getId(), newProduct);
+        setEnable(false);
+        Model.getInstance().updateProductInformation(currentProduct.getId(), newProduct, new Model.OperationListener() {
+            @Override
+            public void success() {
+                setEnable(true);
+                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
+                Log.d("TAG", "EditProductFragment - Product has been edited");
+                ShowSaveDialog();
+            }
+
+            @Override
+            public void fail(String msg) {
+                setEnable(true);
+                showErrorMessage(msg);
+            }
+        });
         return  true;
+    }
+
+    private void setEnable(boolean enable)
+    {
+        if(enable)
+            progressBar.setVisibility(view.GONE);
+        else
+            progressBar.setVisibility(view.VISIBLE);
+
+        description.setEnabled(enable);
+        price.setEnabled(enable);
+        typeSpinner.setEnabled(enable);
+        saveButton.setEnabled(enable);
+        cancelButton.setEnabled(enable);
+        imageButton.setEnabled(enable);
+        deleteButton.setEnabled(enable);
     }
 }

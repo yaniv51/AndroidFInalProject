@@ -8,7 +8,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Domain.ProductSql;
-import com.talkramer.finalproject.model.Utils.Helper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -74,74 +73,67 @@ public class Model {
 
     public void getAllProductsAsync(final GetProductsListenerInterface listener)
     {
-        if(!firstInit)
-        {
-            final String lastUpdateDate = ProductSql.getLastUpdateDate(sqlModel.getReadbleDB());
-            firebaseModel.getAllProductsAsync(new GetProductsListenerInterface() {
-                @Override
-                public void done(List<Product> products) {
-                    List<Product> res = null;
-                    if(products != null && products.size() > 0) {
-                        //update the local DB
-                        String reacentUpdate = lastUpdateDate;
-                        for (Product p : products) {
-                            //update DB and image cach
-                            cachUpdate(p);
-                            if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
-                                reacentUpdate = p.getLastUpdated();
-                            }
-                            Log.d("TAG","updating: " + p.toString());
+        final String lastUpdateDate = ProductSql.getLastUpdateDate(sqlModel.getReadbleDB());
+        firebaseModel.getAllProductsAsync(new GetProductsListenerInterface() {
+            @Override
+            public void done(List<Product> products) {
+                List<Product> res = null;
+                if(products != null && products.size() > 0) {
+                    //update the local DB
+                    String reacentUpdate = lastUpdateDate;
+                    for (Product p : products) {
+                        //update DB and image cach
+                        cachUpdate(p);
+                        if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
+                            reacentUpdate = p.getLastUpdated();
                         }
-                        ProductSql.setLastUpdateDate(sqlModel.getWritableDB(), reacentUpdate);
-                        res = ProductSql.getAllProducts(sqlModel.getReadbleDB());
+                        Log.d("TAG","updating: " + p.toString());
                     }
-                    //return the complete product list to the caller
-                    if(res == null)
-                        res = new LinkedList<Product>();
-                    data = res;
-                    listener.done(res);
+                    ProductSql.setLastUpdateDate(sqlModel.getWritableDB(), reacentUpdate);
+                    res = ProductSql.getAllProducts(sqlModel.getReadbleDB());
                 }
-            });
-        }
-        else
-            init();
+                //return the complete product list to the caller
+                if(res == null)
+                    res = new LinkedList<Product>();
+                data = res;
+                listener.done(res);
+            }
+        });
     }
 
-    private void init() {
-        for (int i = 0; i < 2; i++) {
-            Helper.ProductType type;
-            Helper.Customers customer;
-            Product product;
 
-            if (i % 3 == 0)
-                customer = Helper.Customers.MEN;
-            else if (i % 3 == 1)
-                customer = Helper.Customers.WOMEN;
-            else
-                customer = Helper.Customers.UNISEX;
-
-            if (i % 4 == 0)
-                type = Helper.ProductType.PANTS;
-            else if (i % 4 == 1)
-                type = Helper.ProductType.DRESS;
-            else if (i % 4 == 2)
-                type = Helper.ProductType.SHIRT;
-            else
-                type = Helper.ProductType.OTHER;
-
-            product = new Product("" + i, type, "Description: " + i, 12 + i, customer, "sellerId: "+i, null);
-
-            add(product);
-        }
-    }
-
-    public void add(Product newProduct)
+    public void add(final Product newProduct, final OperationListener listener)
     {
         newProduct.setLastUpdated(getCurrentDate());
 
-        data.add(newProduct);
-        cloudUpdate(newProduct);
-        cachUpdate(newProduct);
+        //get cloud counter for set new product ID
+        firebaseModel.getMaxItem(new GetMaxProductIdListener() {
+            @Override
+            public void success(int counter) {
+                newProduct.setId((counter+1) +"");
+                firebaseModel.addNewProduct(newProduct, new OperationListener() {
+                    @Override
+                    public void success() {
+                        cachUpdate(newProduct);
+                        cloudinaryUpdate(newProduct);
+                        listener.success();
+                    }
+
+                    @Override
+                    public void fail(String msg) {
+                        listener.fail(msg);
+                    }
+                });
+            }
+
+            @Override
+            public void fail(String msg) {
+                listener.fail(msg);
+            }
+        });
+
+
+
     }
 
     public String getCurrentDate()
@@ -157,14 +149,8 @@ public class Model {
         return  dateFormatGmt.format(date).toString();
     }
 
-    private void cloudUpdate(Product newProduct)
+    private void cloudinaryUpdate(Product newProduct)
     {
-        firebaseModel.add(newProduct, new AddProductListener() {
-            @Override
-            public void done(Product pr) {
-                Log.d("TAG", "Finish add product " + pr.getId());
-            }
-        });
         cloudinary.uploadImage(newProduct.getId(), newProduct.getImageProduct());
     }
 
@@ -185,22 +171,28 @@ public class Model {
         return null;
     }
 
-    public void updateProductInformation(String productId, Product newProduct)
+    public void updateProductInformation(String productId, Product newProduct, OperationListener listener)
     {
-        for(int i=0; i<data.size(); i++) {
-            Product product = data.get(i);
+        Product updatedProduct = null;
 
-            if (product.getId().compareTo(productId) == 0)
-            {
-                product.setType(newProduct.getType());
-                product.setDescription(newProduct.getDescription());
-                product.setPrice(newProduct.getPrice());
-                product.setForWhom(newProduct.getForWhom());
-                product.setImageProduct(newProduct.getImageProduct());
-                product.setLastUpdated(getCurrentDate());
-                cloudUpdate(product);
-                cachUpdate(product);
+        for(int i=0; i<data.size(); i++) {
+            updatedProduct = data.get(i);
+
+            if (updatedProduct.getId().compareTo(productId) == 0) {
+                updatedProduct.setType(newProduct.getType());
+                updatedProduct.setDescription(newProduct.getDescription());
+                updatedProduct.setPrice(newProduct.getPrice());
+                updatedProduct.setForWhom(newProduct.getForWhom());
+                updatedProduct.setImageProduct(newProduct.getImageProduct());
+                updatedProduct.setLastUpdated(getCurrentDate());
+                break;
             }
+        }
+        if(updatedProduct != null)
+        {
+            firebaseModel.updateProduct(updatedProduct, listener);
+            cloudinaryUpdate(updatedProduct);
+            cachUpdate(updatedProduct);
         }
     }
 
@@ -208,15 +200,12 @@ public class Model {
         return data;
     }
 
-    public void delete(Product product){
+    public void delete(Product product, Model.OperationListener listener){
         data.remove(product);
-        firebaseModel.remove(product);
         fileManager.removeImage(product.getId());
         boolean removed = ProductSql.deleteById(sqlModel.getWritableDB(), product.getId());
-        if(removed)
-        {
 
-        }
+        firebaseModel.remove(product, listener);
         //TODO: check if cannot use remove on cloudinary because only the admin can remove an object
         //cloudinary.removeImage(product.getId());
     }
@@ -249,22 +238,18 @@ public class Model {
 
     public FirebaseUser getFirebaseUser() {return firebaseModel.getFirebaseUser();}
 
-    public void signUp(String email, String password, SignupListener listener)
+    public void signUp(String email, String password, OperationListener listener)
     {
         firebaseModel.signUp(email, password, listener);
     }
 
-    public void resetPassword(String email, SignupListener listener)
+    public void resetPassword(String email, OperationListener listener)
     {
         firebaseModel.resetPassword(email, listener);
     }
 
     public interface GetProductsListenerInterface {
         void done(List<Product> prList);
-    }
-
-    public interface AddProductListener {
-        void done(Product pr);
     }
 
     public interface LoadImageListener{
@@ -275,8 +260,14 @@ public class Model {
         void onDone(String userId, Exception e);
     }
 
-    public interface SignupListener {
-        public void success();
-        public void fail(String msg);
+    public interface OperationListener {
+        void success();
+        void fail(String msg);
+    }
+
+    public interface GetMaxProductIdListener
+    {
+        void success(int counter);
+        void fail(String msg);
     }
 }

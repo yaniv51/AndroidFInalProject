@@ -48,11 +48,11 @@
 
 
     <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@android:style/Widget.ProgressBar.Large"
-        android:layout_gravity="center"
-        android:id="@+id/signin_progressbar"
-        android:visibility="gone"/>
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@android:style/Widget.ProgressBar.Large"
+    android:layout_gravity="center"
+    android:id="@+id/signin_progressbar"
+    android:visibility="gone"/>
 
 </FrameLayout>

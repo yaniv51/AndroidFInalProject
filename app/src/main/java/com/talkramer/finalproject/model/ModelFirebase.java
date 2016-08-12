@@ -17,12 +17,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Domain.ProductWrapper;
+import com.talkramer.finalproject.model.Utils.Helper;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TimeZone;
 
 public class ModelFirebase {
 
@@ -40,8 +38,7 @@ public class ModelFirebase {
         init();
     }
 
-    private void init()
-    {
+    private void init() {
         myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -70,37 +67,51 @@ public class ModelFirebase {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
-    public void add(Product pr, Model.AddProductListener listener) {
+
+    public void addNewProduct(Product pr, Model.OperationListener listener) {
         try {
-            Firebase prRef = myFirebase.child("product").child(pr.getId());
+            Firebase prRef = myFirebase.child(Helper.productChildren).child(pr.getId());
 
             //use product wrapper for upload product object without Bitmap
             prRef.setValue(new ProductWrapper(pr));
+            increaseCounter(pr.getId());
+            listener.success();
+        } catch (Exception e) {
+            listener.fail(e.getMessage());
+        }
+    }
 
-            //TODO: for what using this line?
-            listener.done(pr);
+    private void increaseCounter(String newValue) {
+        Firebase prRef = myFirebase.child(Helper.counterChildren);
+        prRef.setValue(newValue);
+    }
+
+    public void remove(final Product product, Model.OperationListener listener) {
+        product.setDeleted(true);
+        updateProduct(product, listener);
+    }
+
+    public void updateProduct(Product product, Model.OperationListener listener)
+    {
+        try
+        {
+            Firebase prRef = myFirebase.child(Helper.productChildren).child(product.getId());
+
+            //use product wrapper for upload product object without Bitmap
+            prRef.setValue(new ProductWrapper(product));
+
+            listener.success();
         }
         catch (Exception e)
         {
-            Log.d("TAG", e.getMessage());
+            listener.fail(e.getMessage());
         }
     }
 
-    public void remove(final Product product)
-    {
-        product.setDeleted(true);
-        add(product, new Model.AddProductListener() {
-            @Override
-            public void done(Product pr) {
-                Log.d("TAG", "Product " + product.getId()+ " marked as deleted");
-            }
-        });
-        //Firebase prRef = myFirebase.child("product").child(product.getId());
-        //prRef.removeValue();
-    }
+
 
     public void getProduct(String id, final Model.GetProductsListenerInterface listener) {
-        Firebase prRef = myFirebase.child("product").child(id);
+        Firebase prRef = myFirebase.child(Helper.productChildren).child(id);
         // Attach a listener to read the data at our posts reference
         prRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -122,7 +133,7 @@ public class ModelFirebase {
     }
 
     public void getAllProductsAsync(final Model.GetProductsListenerInterface listener) {
-        Firebase prRef = myFirebase.child("product");
+        Firebase prRef = myFirebase.child(Helper.productChildren);
         // Attach a listener to read the data at our posts reference
         prRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -143,13 +154,31 @@ public class ModelFirebase {
         });
     }
 
+    public void getMaxItem(final Model.GetMaxProductIdListener listener)
+    {
+        Firebase prRef = myFirebase.child(Helper.counterChildren);
+        prRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final String counter = dataSnapshot.getValue(String.class);
+                int newCounter = Integer.parseInt(counter);
+                listener.success(newCounter);
+                Log.d("TAG", "Successfully load counter: " + counter);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d("TAG", "Failed load counter");
+                listener.fail(firebaseError.getMessage());
+            }
+        });
+    }
+
     public String getUserId(){
-        AuthData authData = myFirebase.getAuth();
-        if (authData != null) {
-            return authData.getUid();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
         }
-
-
         return null;
     }
 
@@ -158,7 +187,7 @@ public class ModelFirebase {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void signUp(String email, String password, final Model.SignupListener listener) {
+    public void signUp(String email, String password, final Model.OperationListener listener) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(ApplicationStartup.getAppActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -189,7 +218,7 @@ public class ModelFirebase {
                 });
     }
 
-    public void resetPassword(String email, final Model.SignupListener listener)
+    public void resetPassword(String email, final Model.OperationListener listener)
     {
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

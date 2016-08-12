@@ -103,7 +103,12 @@ public class ProductDetailsFragment extends Fragment {
         else if(result == Helper.ActionResult.DELETE.ordinal())
         {
             Log.d("TAG", "ProductDetailsFragment - resume with Delete operation");
-            Model.getInstance().delete(currentProduct);
+            Model.getInstance().delete(currentProduct, new Model.OperationListener() {
+                @Override
+                public void success() { }
+
+                @Override
+                public void fail(String msg) { } });
             //close current fragment and open the last one
             getFragmentManager().popBackStack();
         }
