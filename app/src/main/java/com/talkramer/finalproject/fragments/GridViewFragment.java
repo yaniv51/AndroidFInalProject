@@ -114,7 +114,6 @@ public class GridViewFragment extends Fragment {
         });
     }
 
-
     @Override
     public void onResume() {
         int result;

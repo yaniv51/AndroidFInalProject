@@ -12,13 +12,14 @@ public class Product {
     int price;
     Helper.Customers forWhom;
     Bitmap imageProduct;
-    String sellerId;
+    String sellerId, sellerEmail;
+    String buyerEmail;
     String lastUpdated;
     boolean deleted;
 
     public Product() { }
 
-    public Product(String id, Helper.ProductType type, String description, int price, Helper.Customers forWhom, String sellerId, Bitmap imageProduct)
+    public Product(String id, Helper.ProductType type, String description, int price, Helper.Customers forWhom, String sellerId, String sellerEmail, Bitmap imageProduct)
      {
         this.id = id;
         this.type = type;
@@ -27,6 +28,9 @@ public class Product {
         this.forWhom = forWhom;
         this.imageProduct = imageProduct;
         this.sellerId = sellerId;
+        this.sellerEmail = sellerEmail;
+        this.buyerEmail ="";
+        deleted = false;
     }
 
     public String getId() { return id; }
@@ -70,6 +74,15 @@ public class Product {
 
     public void setDeleted(boolean deleted){
         this.deleted = deleted;
+    }
+
+    public String getSellerEmail() { return sellerEmail; }
+
+    public String getBuyerEmail() {return  buyerEmail;}
+
+    public void setBuyerEmail(String mail)
+    {
+        buyerEmail = mail;
     }
 }
 

@@ -87,7 +87,6 @@ public class ModelFirebase {
     }
 
     public void remove(final Product product, Model.OperationListener listener) {
-        product.setDeleted(true);
         updateProduct(product, listener);
     }
 
@@ -175,9 +174,18 @@ public class ModelFirebase {
     }
 
     public String getUserId(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = getFirebaseUser();
         if (user != null) {
             return user.getUid();
+        }
+        return null;
+    }
+
+    public String getUserEmail()
+    {
+        FirebaseUser user = getFirebaseUser();
+        if (user != null) {
+            return user.getEmail();
         }
         return null;
     }

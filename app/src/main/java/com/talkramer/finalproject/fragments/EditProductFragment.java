@@ -191,15 +191,19 @@ public class EditProductFragment extends Fragment {
     public boolean updateProduct()
     {
         Bitmap localImage;
-        String description, stringPrice, sellerId;
+        String description, stringPrice, sellerId, sellerEmail, buyerEmail;
         Helper.Customers customer = Helper.Customers.MEN;
         Helper.ProductType type;
         Product newProduct;
+        boolean deleted;
         int spinnerSelection, price;
 
         description = this.description.getText().toString();
         stringPrice = this.price.getText().toString();
         sellerId = currentProduct.getSellerId();
+        sellerEmail = currentProduct.getSellerEmail();
+        buyerEmail = currentProduct.getBuyerEmail();
+        deleted = currentProduct.getDeleted();
 
         customer = menRadio.isChecked()? Helper.Customers.MEN : customer;
         customer = womenRadio.isChecked()? Helper.Customers.WOMEN : customer;
@@ -236,7 +240,9 @@ public class EditProductFragment extends Fragment {
         else
             localImage = newImage;
 
-        newProduct = new Product(currentProduct.getId(), type, description, price , customer,sellerId, localImage);
+        newProduct = new Product(currentProduct.getId(), type, description, price , customer,sellerId, sellerEmail, localImage);
+        newProduct.setBuyerEmail(buyerEmail);
+        newProduct.setDeleted(deleted);
 
         setEnable(false);
         Model.getInstance().updateProductInformation(currentProduct.getId(), newProduct, new Model.OperationListener() {

@@ -153,7 +153,7 @@ public class NewProductFragment extends Fragment {
 
     public boolean updateProduct()
     {
-        String description, stringPrice, sellerId;
+        String description, stringPrice, sellerId, sellerEmail;
         Helper.Customers customer = Helper.Customers.MEN;
         Helper.ProductType type;
         Product newProduct;
@@ -166,6 +166,7 @@ public class NewProductFragment extends Fragment {
         description = this.description.getText().toString();
         stringPrice = this.price.getText().toString();
         sellerId = Model.getInstance().getUserId();
+        sellerEmail = Model.getInstance().getUserEmail();
 
         customer = menRadio.isChecked()? Helper.Customers.MEN : customer;
         customer = womenRadio.isChecked()? Helper.Customers.WOMEN : customer;
@@ -193,7 +194,7 @@ public class NewProductFragment extends Fragment {
         //if failed to create new Id or parse price
         try {
             price = Integer.parseInt(stringPrice);
-            newProduct = new Product(0+"", type, description, price, customer, sellerId, image);
+            newProduct = new Product(0+"", type, description, price, customer, sellerId, sellerEmail, image);
         }
         catch (Exception ex)
         {

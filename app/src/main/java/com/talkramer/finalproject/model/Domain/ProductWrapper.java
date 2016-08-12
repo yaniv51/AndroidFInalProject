@@ -13,7 +13,8 @@ public class ProductWrapper {
     String description;
     int price;
     Helper.Customers forWhom;
-    String sellerId;
+    String sellerId, sellerEmail;
+    String buyerEmail;
     String lastUpdated;
     boolean deleted;
 
@@ -30,6 +31,8 @@ public class ProductWrapper {
         this.sellerId = product.getSellerId();
         this.lastUpdated = product.getLastUpdated();
         this.deleted = product.getDeleted();
+        this.sellerEmail = product.getSellerEmail();
+        this.buyerEmail = product.getBuyerEmail();
     }
 
     public String getId() { return id; }
@@ -65,4 +68,8 @@ public class ProductWrapper {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
+    public String getSellerEmail() { return sellerEmail; }
+
+    public String getBuyerEmail() {return buyerEmail;}
 }

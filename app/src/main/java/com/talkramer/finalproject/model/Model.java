@@ -131,9 +131,6 @@ public class Model {
                 listener.fail(msg);
             }
         });
-
-
-
     }
 
     public String getCurrentDate()
@@ -201,6 +198,7 @@ public class Model {
     }
 
     public void delete(Product product, Model.OperationListener listener){
+        product.setDeleted(true);
         data.remove(product);
         fileManager.removeImage(product.getId());
         boolean removed = ProductSql.deleteById(sqlModel.getWritableDB(), product.getId());
@@ -210,21 +208,23 @@ public class Model {
         //cloudinary.removeImage(product.getId());
     }
 
-    public String getNewProductId()
+    public void buyProduct(Product product, OperationListener listener)
     {
-        Product lastProduct;
-        int newId;
+        String buyerEmail = getUserEmail();
+        product.setBuyerEmail(buyerEmail);
+        cachUpdate(product);
+        firebaseModel.updateProduct(product, listener);
+    }
 
-        if(!data.isEmpty())
-        {
-            lastProduct = data.get(data.size()-1);
-            newId = Integer.parseInt(lastProduct.getId()) + 1;
-        }
-        else
-        {
-            newId = 1;
-        }
-        return  ""+newId;
+    public String getUserId() {return firebaseModel.getUserId();}
+
+    public String getUserEmail() {return firebaseModel.getUserEmail();}
+
+    public FirebaseUser getFirebaseUser() {return firebaseModel.getFirebaseUser();}
+
+    public void signUp(String email, String password, OperationListener listener)
+    {
+        firebaseModel.signUp(email, password, listener);
     }
 
     public void login(String email, String password, AuthListener listener)
@@ -233,15 +233,6 @@ public class Model {
     }
 
     public void logout() {firebaseModel.logout();}
-
-    public String getUserId() {return firebaseModel.getUserId();}
-
-    public FirebaseUser getFirebaseUser() {return firebaseModel.getFirebaseUser();}
-
-    public void signUp(String email, String password, OperationListener listener)
-    {
-        firebaseModel.signUp(email, password, listener);
-    }
 
     public void resetPassword(String email, OperationListener listener)
     {

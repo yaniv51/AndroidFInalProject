@@ -25,6 +25,7 @@ public class ProductSql {
     final static String PRODUCT_TABLE_DELETED = "deleted";
     final static String PRODUCT_LAST_UPDATED = "last_updated";
     final static String PRODUCT_BUYER = "buyer";
+    final static String PRODUCT_SELLER_EMAIL = "seller_email";
 
     final static String TEXT_TYPE = " TEXT";
     final static String INTEGER_TYPE = " INTEGER";
@@ -41,7 +42,9 @@ public class ProductSql {
                 PRODUCT_TABEL_SELLER_ID + TEXT_TYPE + SEPERATOR +
                 PRODUCT_TABLE_DELETED + INTEGER_TYPE +SEPERATOR +
                 PRODUCT_LAST_UPDATED + TEXT_TYPE +SEPERATOR +
-                PRODUCT_BUYER +TEXT_TYPE
+                PRODUCT_BUYER +TEXT_TYPE + SEPERATOR +
+                PRODUCT_SELLER_EMAIL + TEXT_TYPE
+
                 +");";
 
         db.execSQL(query);
@@ -65,6 +68,7 @@ public class ProductSql {
             int deletedIndex = cursor.getColumnIndex(PRODUCT_TABLE_DELETED);
             int lastUpdateIndex = cursor.getColumnIndex(PRODUCT_LAST_UPDATED);
             int buyerIndex = cursor.getColumnIndex(PRODUCT_BUYER);
+            int sellerEmailIndex = cursor.getColumnIndex(PRODUCT_SELLER_EMAIL);
 
             do {
                 String id = cursor.getString(idIndex);
@@ -75,16 +79,17 @@ public class ProductSql {
                 String sellerId = cursor.getString(sellerIdIndex);
                 int deleted = cursor.getInt(deletedIndex);
                 String lastUpdated = cursor.getString(lastUpdateIndex);
-                //TODO: fix buyer on all references
                 String buyer = cursor.getString(buyerIndex);
+                String sellerEmail = cursor.getString(sellerEmailIndex);
 
                 Helper.ProductType newType = Helper.ProductType.valueOf(type);
                 Helper.Customers newForWhom = Helper.Customers.valueOf(forWhom);
                 boolean deletedBool = deleted == 1;
 
-                Product pr = new Product(id, newType, description, price, newForWhom, sellerId, null);
+                Product pr = new Product(id, newType, description, price, newForWhom, sellerId, sellerEmail, null);
                 pr.setDeleted(deletedBool);
                 pr.setLastUpdated(lastUpdated);
+                pr.setBuyerEmail(buyer);
 
                 products.add(pr);
             } while (cursor.moveToNext());
@@ -107,6 +112,7 @@ public class ProductSql {
             int deletedIndex = cursor.getColumnIndex(PRODUCT_TABLE_DELETED);
             int lastUpdateIndex = cursor.getColumnIndex(PRODUCT_LAST_UPDATED);
             int buyerIndex = cursor.getColumnIndex(PRODUCT_BUYER);
+            int sellerEmailIndex = cursor.getColumnIndex(PRODUCT_SELLER_EMAIL);
 
 
             String productId = cursor.getString(idIndex);
@@ -118,15 +124,17 @@ public class ProductSql {
             int deleted = cursor.getInt(deletedIndex);
             String lastUpdated = cursor.getString(lastUpdateIndex);
             String buyer = cursor.getString(buyerIndex);
+            String sellerEmail = cursor.getString(sellerEmailIndex);
 
 
             Helper.ProductType newType = Helper.ProductType.valueOf(type);
             Helper.Customers newForWhom = Helper.Customers.valueOf(forWhom);
             boolean deletedBool = deleted == 1;
 
-            Product pr = new Product(productId, newType, description, price, newForWhom, sellerId, null);
+            Product pr = new Product(productId, newType, description, price, newForWhom, sellerId, sellerEmail, null);
             pr.setDeleted(deletedBool);
             pr.setLastUpdated(lastUpdated);
+            pr.setBuyerEmail(buyer);
             return pr;
         }
         return null;
@@ -143,7 +151,8 @@ public class ProductSql {
             values.put(PRODUCT_TABEL_SELLER_ID, product.getSellerId());
             values.put(PRODUCT_TABLE_DELETED, product.getDeleted()? 1:0);
             values.put(PRODUCT_LAST_UPDATED, product.getLastUpdated());
-            //values.put(PRODUCT_BUYER, product.getBuyer());
+            values.put(PRODUCT_BUYER, product.getBuyerEmail());
+            values.put(PRODUCT_SELLER_EMAIL, product.getSellerEmail());
              db.insertWithOnConflict(PRODUCT_TABLE, PRODUCT_TABLE_ID, values, SQLiteDatabase.CONFLICT_REPLACE);
         }catch (Exception ex)
         {
@@ -154,7 +163,6 @@ public class ProductSql {
     public static boolean deleteById(SQLiteDatabase db, String productId)
     {
         //db.delete(PRODUCT_TABLE, PRODUCT_TABLE_ID+"=?", new String[] {productId});
-
         return db.delete(PRODUCT_TABLE, PRODUCT_TABLE_ID + "=" + productId, null) > 0;
     }
 

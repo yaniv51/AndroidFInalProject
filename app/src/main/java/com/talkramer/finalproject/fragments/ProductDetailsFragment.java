@@ -1,6 +1,8 @@
 package com.talkramer.finalproject.fragments;
 
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -27,6 +30,8 @@ public class ProductDetailsFragment extends Fragment {
     private Product currentProduct;
     private ImageView imageView;
     private View view;
+    private Button buyButton, editButton;
+    private ProgressBar progressBar;
 
     public ProductDetailsFragment() {
         // Required empty public constructor
@@ -42,13 +47,29 @@ public class ProductDetailsFragment extends Fragment {
 
         currentProduct = Model.getInstance().getProduct(productId);
 
-        Button buyButton = (Button) view.findViewById(R.id.product_details_buy);
-        Button editButton = (Button) view.findViewById(R.id.product_details_edit);
+        buyButton = (Button) view.findViewById(R.id.product_details_buy);
+        editButton = (Button) view.findViewById(R.id.product_details_edit);
+
+        progressBar = (ProgressBar) view.findViewById(R.id.product_details_progressbar);
 
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TAG", "ProductDetailsFragment - click to buy product: "+currentProduct.getId());
+                setEnable(false);
+                Model.getInstance().buyProduct(currentProduct, new Model.OperationListener() {
+                    @Override
+                    public void success() {
+                        setEnable(true);
+                        buyButton.setEnabled(false);
+                        showMessage("Product marked as bought. Please contact seller on: \n" + currentProduct.getSellerEmail());
+                    }
+
+                    @Override
+                    public void fail(String msg) {
+                        setEnable(true);
+                        showMessage("Could not buy product. Try again later. " + msg);
+                    }
+                });
             }
         });
 
@@ -80,7 +101,6 @@ public class ProductDetailsFragment extends Fragment {
         imageView = (ImageView) view.findViewById(R.id.product_details_imageView);
 
         UpdateProductOnUI();
-
         return  view;
     }
 
@@ -128,7 +148,7 @@ public class ProductDetailsFragment extends Fragment {
         Helper.Customers customer;
         description.setText(currentProduct.getDescription());
         price.setText("" + currentProduct.getPrice());
-        seller.setText(currentProduct.getSellerId());
+        seller.setText(currentProduct.getSellerEmail());
 
         customer = currentProduct.getForWhom();
         menRadio.setChecked(customer == Helper.Customers.MEN);
@@ -140,5 +160,48 @@ public class ProductDetailsFragment extends Fragment {
         typeArray = getResources().getStringArray(R.array.product_types_array);
         type.setText(typeArray[productType.ordinal()]);
         imageView.setImageBitmap(currentProduct.getImageProduct());
+
+        if(currentProduct.getDeleted())
+        {
+            buyButton.setEnabled(false);
+            editButton.setEnabled(false);
+        }
+
+        if(currentProduct.getBuyerEmail() != null && currentProduct.getBuyerEmail().compareTo("") !=0)
+        {
+            buyButton.setEnabled(false);
+        }
+    }
+
+    private void setEnable(boolean enable)
+    {
+        if(enable)
+            progressBar.setVisibility(view.GONE);
+        else
+            progressBar.setVisibility(view.VISIBLE);
+
+        description.setEnabled(enable);
+        price.setEnabled(enable);
+        buyButton.setEnabled(enable);
+        editButton.setEnabled(enable);
+        seller.setEnabled(enable);
+        type.setEnabled(enable);
+    }
+
+    private void showMessage(String message)
+    {
+        //if already in use and not by current student - show error message
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setMessage(message);
+
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                return;
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }
