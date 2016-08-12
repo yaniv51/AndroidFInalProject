@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Domain.ProductSql;
@@ -242,6 +243,17 @@ public class Model {
         firebaseModel.login(email, password, listener);
     }
 
+    public void logout() {firebaseModel.logout();}
+
+    public String getUserId() {return firebaseModel.getUserId();}
+
+    public FirebaseUser getFirebaseUser() {return firebaseModel.getFirebaseUser();}
+
+    public void signUp(String email, String password, SignupListener listener)
+    {
+        firebaseModel.signUp(email, password, listener);
+    }
+
     public interface GetProductsListenerInterface {
         void done(List<Product> prList);
     }
@@ -256,5 +268,10 @@ public class Model {
 
     public interface AuthListener{
         void onDone(String userId, Exception e);
+    }
+
+    public interface SignupListener {
+        public void success();
+        public void fail(String msg);
     }
 }

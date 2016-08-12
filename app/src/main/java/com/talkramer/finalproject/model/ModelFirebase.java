@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Domain.ProductWrapper;
 
@@ -64,9 +65,9 @@ public class ModelFirebase {
                     // User is signed out
                     Log.d("TAG", "onAuthStateChanged:signed_out");
                 }
-                // ...
             }
         };
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     public void add(Product pr, Model.AddProductListener listener) {
@@ -147,32 +148,34 @@ public class ModelFirebase {
         if (authData != null) {
             return authData.getUid();
         }
+
+
         return null;
     }
 
-    public void signeup(String email, String pwd, final SignupListener listener) {
-        myFirebase.createUser(email, pwd, new Firebase.ResultHandler() {
-            @Override
-            public void onSuccess() {
-                listener.success();
-            }
-
-            @Override
-            public void onError(FirebaseError firebaseError) {
-
-                listener.fail(firebaseError.getMessage());
-            }
-        });
-
+    public FirebaseUser getFirebaseUser()
+    {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void logout() {
-        myFirebase.unauth();
+    public void signUp(String email, String password, final Model.SignupListener listener) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(ApplicationStartup.getAppActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("TAG", "createUserWithEmail:onComplete:" + task.isSuccessful());
+
+                        if(task.isSuccessful())
+                            listener.success();
+                        else
+                            listener.fail("Failed to create user. Try again later." + task.getException().getMessage());
+                    }
+                });
     }
 
     public void login(String email, String password, final Model.AuthListener listener) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(ApplicationStartup.getAppActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
@@ -184,7 +187,9 @@ public class ModelFirebase {
                         }
                     }
                 });
-        //TODO: temporary because of fail on login
-        listener.onDone("", null);
+    }
+
+    public void logout() {
+        mAuth.signOut();
     }
 }

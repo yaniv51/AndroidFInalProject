@@ -7,8 +7,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.firebase.client.Firebase;
+import com.google.firebase.auth.FirebaseUser;
+import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.fragments.GridViewFragment;
+import com.talkramer.finalproject.fragments.SignInFragment;
 import com.talkramer.finalproject.model.Model;
 
 public class MainActivity extends Activity {
@@ -17,16 +20,24 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Firebase.setAndroidContext(this);
+        ApplicationStartup.setActivity(this);
 
-        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
-        //getSupportActionBar().setTitle(Html.fromHtml("<font color='#FF8A11'>My Little Shop</font>"));
+        FirebaseUser user = Model.getInstance().getFirebaseUser();
 
-        GridViewFragment frag = new GridViewFragment();
+        if(user == null)
+        {
+            SignInFragment frag = new SignInFragment();
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.add(R.id.main_frag_container, frag, "listFragment");
-        transaction.commit();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.add(R.id.main_frag_container, frag, "signInFragment");
+            transaction.commit();
+        }
+        else {
+            GridViewFragment frag = new GridViewFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.main_frag_container, frag);
+            transaction.commit();
+        }
     }
 
     @Override
@@ -41,7 +52,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.menu_search_button, menu);
+        getMenuInflater().inflate(R.menu.menu_search_button, menu);
         //getMenuInflater().inflate(R.menu.menu_home_button, menu);
         //getMenuInflater().inflate(R.menu.menu_profile_button, menu);
         return super.onCreateOptionsMenu(menu);

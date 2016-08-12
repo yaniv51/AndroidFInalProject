@@ -24,4 +24,7 @@ public class Helper {
     public static final String ProductId = "PRODUCT_ID";
     public static final String OPERATION = "OPERATION";
     public static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static final String RememberMe = "REMEMBER_ME";
+    public static final String Email = "EMAIL";
+    public static final String PASSWORD = "PASSWORD";
 }
