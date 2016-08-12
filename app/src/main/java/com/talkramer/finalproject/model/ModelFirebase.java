@@ -168,7 +168,7 @@ public class ModelFirebase {
                         if(task.isSuccessful())
                             listener.success();
                         else
-                            listener.fail("Failed to create user. Try again later." + task.getException().getMessage());
+                            listener.fail("Failed to create user. " + task.getException().getMessage());
                     }
                 });
     }
@@ -184,6 +184,25 @@ public class ModelFirebase {
                         }else{
                             Log.d("TAG", "signInWithEmail:failed", task.getException());
                             listener.onDone(null,task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void resetPassword(String email, final Model.SignupListener listener)
+    {
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TAG", "Email sent.");
+                            listener.success();
+                        }
+                        else
+                        {
+                            Log.d("TAG", "Reset password failed");
+                            listener.fail(task.getException().getMessage());
                         }
                     }
                 });

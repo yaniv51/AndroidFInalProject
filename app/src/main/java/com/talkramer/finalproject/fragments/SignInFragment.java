@@ -10,18 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
-import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.dialogs.ForgotPasswordDialog;
 import com.talkramer.finalproject.model.Model;
-import com.talkramer.finalproject.model.Utils.Helper;
 
 public class SignInFragment extends Fragment {
 
     private View view;
     private EditText emailext, passwordText;
+    private Button signInButton, registerButton, forgotPasswordButton;
+    private ProgressBar progressBar;
 
     public SignInFragment() {
     }
@@ -33,11 +34,18 @@ public class SignInFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
-        Button signInButton = (Button) view.findViewById(R.id.signInButton_signIn_fragment);
-        final Button registerButton = (Button) view.findViewById(R.id.registerButton_signIn_fragment);
+        signInButton = (Button) view.findViewById(R.id.signInButton_signIn_fragment);
+        registerButton = (Button) view.findViewById(R.id.registerButton_signIn_fragment);
+        forgotPasswordButton = (Button) view.findViewById(R.id.forgotPassword_signIn_fragment);
+
         emailext = (EditText) view.findViewById(R.id.email_signIn_fragment);
         passwordText = (EditText) view.findViewById(R.id.password_signIn_fragment);
+        progressBar = (ProgressBar) view.findViewById(R.id.signin_progressbar);
 
+        emailext.setHint(getResources().getString(R.string.email));
+        passwordText.setHint(getResources().getString(R.string.password));
+
+        //emailext.clearFocus();
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,37 +68,67 @@ public class SignInFragment extends Fragment {
                 password = passwordText.getText().toString();
 
                 Log.d("TAG", "sign in pressed: email: " + email + ", Password: "+ password);
+
+                if(email.compareTo("") == 0) {
+                    showAlertDialog("Please type an email", false);
+                    return;
+                }
+                if(password.compareTo("") == 0)
+                {
+                    showAlertDialog("Please type a valid password", false);
+                    return;
+                }
+
                 signIn(email, password);
             }
         });
+
+        forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ForgotPasswordDialog dialog = new ForgotPasswordDialog();
+                dialog.setDelegate(new ForgotPasswordDialog.ForgetPasswordLisener() {
+                    @Override
+                    public void ok(String email) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        Model.getInstance().resetPassword(email, new Model.SignupListener() {
+                            @Override
+                            public void success() {
+                                progressBar.setVisibility(View.GONE);
+                                showAlertDialog("Please check your email", false);
+                            }
+
+                            @Override
+                            public void fail(String msg) {
+                                progressBar.setVisibility(View.GONE);
+                                showAlertDialog("Could not reset Password. " + msg, false);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void cancle() {
+                        return;
+                    }
+                });
+                dialog.show(getFragmentManager(), "GGG");
+            }
+        });
+
         return view;
     }
 
     private void signIn(final String email, final String password)
     {
+        progressBar.setVisibility(View.VISIBLE);
+        setButtonsEnable(false);
         Model.getInstance().login(email, password, createAuthListener(email, password));
-    }
-
-    private Model.AuthListener createAuthListener(final String email, final String password)
-    {
-        Model.AuthListener listener = new Model.AuthListener() {
-            @Override
-            public void onDone(String userId, Exception e) {
-                if (e == null){
-                    Log.d("TAG", "login success");
-                    signInSeccessfully();
-                }else{
-                    Log.d("TAG",e.getMessage());
-                    showAlertDialog("Could not sign in. "+ e.getMessage(), false);
-                }
-            }
-        };
-
-        return listener;
     }
 
     private void signUp(final String email, final String password)
     {
+        progressBar.setVisibility(View.VISIBLE);
+        setButtonsEnable(false);
         Model.getInstance().signUp(email, password, new Model.SignupListener() {
             @Override
             public void success() {
@@ -104,26 +142,49 @@ public class SignInFragment extends Fragment {
         });
     }
 
+    private Model.AuthListener createAuthListener(final String email, final String password)
+    {
+        Model.AuthListener listener = new Model.AuthListener() {
+            @Override
+            public void onDone(String userId, Exception e) {
+                if (e == null){
+                    Log.d("TAG", "login success");
+                    progressBar.setVisibility(View.GONE);
+                    openProductsFragment();
+                }else{
+                    Log.d("TAG",e.getMessage());
+                    showAlertDialog("Could not sign in. "+ e.getMessage(), false);
+                }
+            }
+        };
+
+        return listener;
+    }
+
     private void showAlertDialog(String message, final boolean successSignin)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage(message);
 
-        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
+                //if successfully logged in, open products fragment
                 if(successSignin)
-                    signInSeccessfully();
+                    openProductsFragment();
+                else //otherwise, enable sign in/register
+                    setButtonsEnable(true);
 
                 return;
             }
         });
 
+        progressBar.setVisibility(View.GONE);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
 
-    private void signInSeccessfully()
+    private void openProductsFragment()
     {
         GridViewFragment frag = new GridViewFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -133,6 +194,14 @@ public class SignInFragment extends Fragment {
         transaction.addToBackStack(null);
         // Commit the transaction
         transaction.commit();
+    }
+
+    private void setButtonsEnable(boolean enable)
+    {
+        emailext.setEnabled(enable);
+        passwordText.setEnabled(enable);
+        signInButton.setEnabled(enable);
+        registerButton.setEnabled(enable);
     }
 
 }

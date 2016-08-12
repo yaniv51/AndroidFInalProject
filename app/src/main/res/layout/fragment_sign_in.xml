@@ -4,22 +4,20 @@
     android:layout_height="match_parent"
     tools:context="com.talkramer.finalproject.fragments.SignInFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:padding="10dp"
-        tools:context=".main"
-        android:layout_gravity="left|bottom">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context=".main"
+    android:layout_gravity="start|bottom">
 
         <EditText
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:text="Email"
+            android:inputType="textEmailAddress"
             android:id="@+id/email_signIn_fragment"/>
 
         <EditText
@@ -27,7 +25,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:text="Password"
             android:id="@+id/password_signIn_fragment"/>
 
         <Button
@@ -41,6 +38,21 @@
             android:layout_height="wrap_content"
             android:text="Register"
             android:id="@+id/registerButton_signIn_fragment"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot your password?"
+            android:id="@+id/forgotPassword_signIn_fragment" />
         </LinearLayout>
+
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_gravity="center"
+        android:id="@+id/signin_progressbar"
+        android:visibility="gone"/>
 
 </FrameLayout>

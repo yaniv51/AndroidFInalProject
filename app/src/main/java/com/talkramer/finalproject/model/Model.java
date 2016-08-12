@@ -254,6 +254,11 @@ public class Model {
         firebaseModel.signUp(email, password, listener);
     }
 
+    public void resetPassword(String email, SignupListener listener)
+    {
+        firebaseModel.resetPassword(email, listener);
+    }
+
     public interface GetProductsListenerInterface {
         void done(List<Product> prList);
     }
