@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="4"
+    android:paddingTop="10dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+        <Button
+            android:layout_width="165dp"
+            android:layout_height="200dp"
+            android:text="Purchase History"
+            android:id="@+id/purchaseHistoryButton_profile_fragment"
+            android:weightSum="1"/>
+        <Button
+            android:layout_width="165dp"
+            android:layout_height="200dp"
+            android:text="Sales History"
+            android:id="@+id/salesHistoryButton_profile_fragment"
+            android:weightSum="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+    <Button
+        android:layout_width="165dp"
+        android:layout_height="200dp"
+        android:text="Add Product"
+        android:id="@+id/addProductButton_profile_fragment"
+        android:weightSum="1"/>
+    <Button
+        android:layout_width="165dp"
+        android:layout_height="200dp"
+        android:text="My Product"
+        android:id="@+id/myProductButton_profile_fragment"
+        android:weightSum="1"/>
+    </LinearLayout>
+</LinearLayout>

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseUser;
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.fragments.ProfileFragment;
 import com.talkramer.finalproject.fragments.GridViewFragment;
 import com.talkramer.finalproject.fragments.SignInFragment;
 import com.talkramer.finalproject.model.Model;
@@ -77,6 +78,12 @@ public class MainActivity extends ActionBarActivity {
             }
 
             case R.id.profile: {
+                ProfileFragment frag = new ProfileFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                //clear fragment back stack
+                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                transaction.add(R.id.main_frag_container, frag, "profile");
+                transaction.commit();
                 break;
             }
 
