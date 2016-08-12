@@ -96,30 +96,9 @@ public class GridViewFragment extends Fragment {
             }
         });
 
-        if(initialize) {
-            firstInit();
-            initialize = false;
-        }
+        loadProductsData();
 
         return view;
-    }
-
-    private void firstInit()
-    {
-        //TODO: add listener to log in
-        Model.getInstance().login("yaniv.israel@gmail.com", "123456", new Model.AuthListener() {
-            @Override
-            public void onDone(String userId, Exception e) {
-                if (e == null){
-                    Log.d("TAG", "login success");
-                    loadProductsData();
-
-                }else{
-                    Log.d("TAG",e.getMessage());
-                    //TODO: handle case of fail on login
-                }
-            }
-        });
     }
 
     private void loadProductsData()
@@ -127,9 +106,9 @@ public class GridViewFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         Model.getInstance().getAllProductsAsync(new Model.GetProductsListenerInterface() {
             @Override
-            public void done(List<Product> students) {
+            public void done(List<Product> products) {
                 progressBar.setVisibility(View.GONE);
-                data = students;
+                data = products;
                 imageAadapter.notifyDataSetChanged();
             }
         });
