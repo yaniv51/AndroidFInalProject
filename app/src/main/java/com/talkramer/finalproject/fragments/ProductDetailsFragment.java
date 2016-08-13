@@ -27,14 +27,13 @@ import com.talkramer.finalproject.model.Utils.Helper;
 public class ProductDetailsFragment extends Fragment {
     private TextView description, price, seller, type;
     private RadioButton menRadio, womenRadio, unisexRadio;
-    private Product currentProduct;
-    private ImageView imageView;
-    private View view;
     private Button buyButton, editButton;
     private ProgressBar progressBar;
+    private ImageView imageView;
+    private View view;
+    private Product currentProduct;
 
     public ProductDetailsFragment() {
-        // Required empty public constructor
     }
 
     @Override

@@ -8,13 +8,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Domain.ProductSql;
-import com.talkramer.finalproject.model.Utils.FileManagerHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
+
+import com.talkramer.finalproject.model.Utils.FileManagerHelper;
+import com.talkramer.finalproject.model.Utils.Helper;
+
 public class Model {
 
     private static Model instance;
@@ -119,14 +122,12 @@ public class Model {
             //update the local DB
             String reacentUpdate = lastUpdateDate;
             for (Product p : products) {
-                if (!p.getDeleted()) {
-                    //update DB and image cach
-                    cachUpdate(p);
-                    if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
-                        reacentUpdate = p.getLastUpdated();
-                    }
-                    Log.d("TAG", "updating: " + p.toString());
+                //update DB and image cach
+                cachUpdate(p);
+                if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
+                    reacentUpdate = p.getLastUpdated();
                 }
+                Log.d("TAG","updating: " + p.toString());
             }
             ProductSql.setLastUpdateDate(sqlModel.getWritableDB(), reacentUpdate);
             res = ProductSql.getAllProducts(sqlModel.getReadbleDB());
@@ -206,6 +207,46 @@ public class Model {
             }
         }
         return null;
+    }
+
+    public List<Product> getFilterProducts(Helper.GridProductFilter filter)
+    {
+        List<Product> products;
+
+        switch (filter)
+        {
+            case ALL_PRODUCTS:
+            {
+                products = ProductSql.getAllProducts(sqlModel.getReadbleDB());
+                break;
+            }
+            case ITEMS_FOR_SALE:
+            {
+                products = ProductSql.getProductsBySeller(sqlModel.getReadbleDB(), getUserId());
+                break;
+            }
+            case ALL_SELLER_ITEMS:
+            {
+                products = ProductSql.getSaleHistoryForUser(sqlModel.getReadbleDB(), getUserId());
+                break;
+            }
+            case PURCH_HISTORY:
+            {
+                products = ProductSql.getSaleHistoryForUser(sqlModel.getReadbleDB(), getUserEmail());
+                break;
+            }
+            case SEARCH:
+            {
+                products = new LinkedList<Product>();
+                break;
+            }
+            default:
+            {
+                products = new LinkedList<Product>();
+                break;
+            }
+        }
+        return products;
     }
 
     public void updateProductInformation(String productId, Product newProduct, OperationListener listener)

@@ -55,7 +55,55 @@ public class ProductSql {
     }
 
     public static List<Product> getAllProducts(SQLiteDatabase db) {
-        Cursor cursor = db.query(PRODUCT_TABLE, null, null , null, null, null, null);
+        Cursor cursor;
+        List<Product> products;
+
+        cursor = db.query(PRODUCT_TABLE, null, null , null, null, null, null);
+        products = getProductsByCursor(cursor);
+        return products;
+    }
+
+    public static List<Product> getProductsBySeller(SQLiteDatabase db, String sellerId) {
+        String where;
+        Cursor cursor;
+        List<Product> products;
+
+        String[] args = {sellerId};
+        where = PRODUCT_TABEL_SELLER_ID + " = ?";
+        cursor = db.query(PRODUCT_TABLE, null, where, args, null, null, null);
+
+        products = getProductsByCursor(cursor);
+        return products;
+    }
+
+    public static List<Product> getSaleHistoryForUser(SQLiteDatabase db, String sellerId) {
+        String where;
+        Cursor cursor;
+        List<Product> products;
+
+        String[] args = {sellerId, ""};
+        where = PRODUCT_TABEL_SELLER_ID + " = ? and " + PRODUCT_BUYER + " != ?";
+        cursor = db.query(PRODUCT_TABLE, null, where, args, null, null, null);
+
+        products = getProductsByCursor(cursor);
+        return products;
+    }
+
+    public static List<Product> getProductsByBuyer(SQLiteDatabase db, String buyerId) {
+        String where;
+        Cursor cursor;
+        List<Product> products;
+
+        String[] args = {buyerId};
+        where = PRODUCT_BUYER + " = ?";
+        cursor = db.query(PRODUCT_TABLE, null, where, args, null, null, null);
+
+        products = getProductsByCursor(cursor);
+        return products;
+    }
+
+    private static List<Product> getProductsByCursor(Cursor cursor)
+    {
         List<Product> products = new LinkedList<Product>();
 
         if (cursor.moveToFirst()) {

@@ -1,27 +1,31 @@
 package com.talkramer.finalproject.fragments;
 
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
-import com.talkramer.finalproject.model.Domain.Product;
-import com.talkramer.finalproject.model.Model;
-import com.talkramer.finalproject.model.Utils.Helper;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
+
+import com.talkramer.finalproject.model.Utils.Helper;
+import com.talkramer.finalproject.model.Model;
+import com.talkramer.finalproject.model.Domain.Product;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,9 +36,15 @@ public class GridViewFragment extends Fragment {
     private List<Product> data;
     private ImageAdapter imageAadapter;
     private Model.UpdateProductsListener updateProductsListener;
-    private boolean firstExec;
-
     ProgressBar progressBar, smallProgressbar;
+
+    private boolean firstExec;
+    private Helper.GridProductFilter filter;
+
+    public void setFilter(Helper.GridProductFilter newFilter)
+    {
+        filter = newFilter;
+    }
 
     public GridViewFragment() {
         // Required empty public constructor
@@ -57,10 +67,9 @@ public class GridViewFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_grid_view, container, false);
         grid = (GridView) view.findViewById(R.id.yani_gridview_gridview);
 
-        data = Model.getInstance().getProducts();
+        data = new LinkedList<Product>();//Model.getInstance().getProducts();
         imageAadapter = new ImageAdapter();
 
-        //TODO: add progressbar
         progressBar = (ProgressBar)view.findViewById(R.id.mainProgressBar);
         smallProgressbar = (ProgressBar) view.findViewById(R.id.small_progress_bar);
 
@@ -80,20 +89,36 @@ public class GridViewFragment extends Fragment {
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack
-
-                transaction.add(R.id.main_frag_container, newFragment, "ProductDetailsFragment");
+                transaction.replace(R.id.main_frag_container, newFragment);
                 transaction.addToBackStack(null);
                 // Commit the transaction
                 transaction.commit();
             }
         });
 
+        /*Button addProductButton = (Button) view.findViewById(R.id.grid_view_add_product);
+        addProductButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TAG", "GridViewFragment - clicked on add product");
+
+                Fragment newFragment = new NewProductFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack
+                transaction.replace(R.id.main_frag_container, newFragment);
+                transaction.addToBackStack(null);
+                // Commit the transaction
+                transaction.commit();
+            }
+        });*/
+
         if(firstExec)
         {
             firstExec = false;
             loadProductsData();
         }
-
 
         return view;
     }
@@ -104,8 +129,8 @@ public class GridViewFragment extends Fragment {
         Model.getInstance().getAllProductsAsync(new Model.GetProductsListenerInterface() {
             @Override
             public void done(List<Product> products) {
+                data = Model.getInstance().getFilterProducts(filter);
                 progressBar.setVisibility(View.GONE);
-                data = products;
                 imageAadapter.notifyDataSetChanged();
             }
         });

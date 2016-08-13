@@ -15,6 +15,7 @@ import com.talkramer.finalproject.fragments.ProfileFragment;
 import com.talkramer.finalproject.fragments.GridViewFragment;
 import com.talkramer.finalproject.fragments.SignInFragment;
 import com.talkramer.finalproject.model.Model;
+import com.talkramer.finalproject.model.Utils.Helper;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -38,6 +39,7 @@ public class MainActivity extends ActionBarActivity {
         }
         else {
             GridViewFragment frag = new GridViewFragment();
+            frag.setFilter(Helper.GridProductFilter.ALL_PRODUCTS);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.main_frag_container, frag);
             transaction.commit();

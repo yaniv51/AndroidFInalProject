@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.dialogs.ForgotPasswordDialog;
 import com.talkramer.finalproject.model.Model;
+import com.talkramer.finalproject.model.Utils.Helper;
 
 public class SignInFragment extends Fragment {
 
@@ -187,6 +188,7 @@ public class SignInFragment extends Fragment {
     private void openProductsFragment()
     {
         GridViewFragment frag = new GridViewFragment();
+        frag.setFilter(Helper.GridProductFilter.ALL_PRODUCTS);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         transaction.replace(R.id.main_frag_container, frag);

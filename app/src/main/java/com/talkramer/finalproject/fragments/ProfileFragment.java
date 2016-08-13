@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.model.Utils.Helper;
 
 public class ProfileFragment extends Fragment {
 
@@ -48,25 +49,36 @@ public class ProfileFragment extends Fragment {
         salesHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                openProductsFragment(Helper.GridProductFilter.ALL_SELLER_ITEMS);
             }
         });
 
         myProductdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                openProductsFragment(Helper.GridProductFilter.ITEMS_FOR_SALE);
             }
         });
 
         purchaseHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                openProductsFragment(Helper.GridProductFilter.PURCH_HISTORY);
             }
         });
 
         return view;
+    }
+
+    private void openProductsFragment(Helper.GridProductFilter filter)
+    {
+        GridViewFragment frag = new GridViewFragment();
+        frag.setFilter(filter);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.main_frag_container, frag);
+        transaction.addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
     }
 }

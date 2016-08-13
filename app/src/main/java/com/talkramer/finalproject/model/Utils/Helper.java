@@ -21,6 +21,11 @@ public class Helper {
         CANCEL, SAVE, DELETE
     }
 
+    public enum GridProductFilter
+    {
+        ALL_PRODUCTS, ITEMS_FOR_SALE, ALL_SELLER_ITEMS, PURCH_HISTORY, SEARCH
+    }
+
     public static final String ProductId = "PRODUCT_ID";
     public static final String OPERATION = "OPERATION";
     public static final int REQUEST_IMAGE_CAPTURE = 1;
