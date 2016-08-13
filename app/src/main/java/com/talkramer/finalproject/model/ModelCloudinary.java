@@ -27,7 +27,7 @@ public class ModelCloudinary {
         cloudinary = new Cloudinary("cloudinary://796956498877215:54yr5DOPhb2DUFJigNxgXf9PGYE@dugje2rt7");
     }
 
-    public void uploadImage(final String imageName,final Bitmap image)
+    public void uploadImage(final String imageName,final Bitmap image, final Model.OperationListener listener)
     {
         if(image == null)
             return;
@@ -46,12 +46,14 @@ public class ModelCloudinary {
                         Log.d("TAG", "save image to url" + res.get("url"));
                     } catch (IOException e) {
                         Log.d("TAG", e.getMessage());
-                        e.printStackTrace();
+                        listener.fail(e.getMessage());
                     }
+                    listener.success();
                 }
                 catch (Exception ex)
                 {
                     Log.d("TAG", ex.getMessage());
+                    listener.fail(ex.getMessage());
                 }
             }
         });

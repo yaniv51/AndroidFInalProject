@@ -248,16 +248,28 @@ public class EditProductFragment extends Fragment {
         Model.getInstance().updateProductInformation(currentProduct.getId(), newProduct, new Model.OperationListener() {
             @Override
             public void success() {
-                setEnable(true);
-                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
-                Log.d("TAG", "EditProductFragment - Product has been edited");
-                ShowSaveDialog();
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        setEnable(true);
+                        getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
+                        Log.d("TAG", "EditProductFragment - Product has been edited");
+                        ShowSaveDialog();
+                    }
+                };
+                getActivity().runOnUiThread(run);
             }
 
             @Override
-            public void fail(String msg) {
-                setEnable(true);
-                showErrorMessage(msg);
+            public void fail(final String msg) {
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        setEnable(true);
+                        showErrorMessage(msg);
+                    }
+                };
+                getActivity().runOnUiThread(run);
             }
         });
         return  true;

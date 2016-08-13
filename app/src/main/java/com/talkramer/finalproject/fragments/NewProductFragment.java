@@ -205,16 +205,28 @@ public class NewProductFragment extends Fragment {
         Model.getInstance().add(newProduct, new Model.OperationListener() {
             @Override
             public void success() {
-                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
-                setEnable(true);
-                Log.d("TAG", "NewProductFragment - Product has been created");
-                ShowSaveDialog();
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.SAVE.ordinal());
+                        setEnable(true);
+                        Log.d("TAG", "NewProductFragment - Product has been created");
+                        ShowSaveDialog();
+                    }
+                };
+                getActivity().runOnUiThread(run);
             }
 
             @Override
-            public void fail(String msg) {
-                setEnable(true);
-                showErrorMessage(msg);
+            public void fail(final String msg) {
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        setEnable(true);
+                        showErrorMessage(msg);
+                    }
+                };
+                getActivity().runOnUiThread(run);
             }
         });
         return  true;
