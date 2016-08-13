@@ -122,18 +122,26 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_orange_dark"
                 android:text="Save"/>
             <Button
                 android:id="@+id/edit_product_delete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_orange_dark"
+                android:layout_marginLeft="10dp"
                 android:text="Delete"/>
             <Button
                 android:id="@+id/edit_product_cancel"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_orange_dark"
+                android:layout_marginLeft="10dp"
                 android:text="Cancel"/>
         </LinearLayout>
 

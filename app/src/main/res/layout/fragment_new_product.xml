@@ -30,6 +30,7 @@
                 android:text="Description:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"
                 />
             <EditText
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -49,7 +50,8 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Price:"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"/>
             <EditText
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="fill_parent"
@@ -69,7 +71,8 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Type:"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"/>
             <Spinner
                 android:id="@+id/new_product_planets_spinner_type"
                 android:layout_width="fill_parent"
@@ -88,7 +91,8 @@
                 android:text="For:"
                 android:paddingRight="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"/>
 
             <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/new_product_radio_group"
@@ -99,16 +103,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Men"
+                    android:textColor="@android:color/holo_orange_dark"
                     android:paddingRight="12dp"/>
                 <RadioButton android:id="@+id/new_product_radio_women"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Women"
+                    android:textColor="@android:color/holo_orange_dark"
                     android:paddingRight="12dp" />
                 <RadioButton android:id="@+id/new_product_radio_unisex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Unisex" />
+                    android:text="Unisex"
+                    android:textColor="@android:color/holo_orange_dark"/>
             </RadioGroup>
         </LinearLayout>
     </LinearLayout>
@@ -122,12 +129,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_orange_dark"
             android:text="Save"/>
         <Button
             android:id="@+id/new_product_cancel"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_orange_dark"
+            android:layout_marginLeft="10dp"
             android:text="Cancel"/>
     </LinearLayout>
 

@@ -32,12 +32,14 @@
                 android:paddingRight="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"
                 />
             <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:textColor="@android:color/holo_orange_dark"
                 android:id="@+id/product_details_description"/>
         </LinearLayout>
 
@@ -52,13 +54,15 @@
                 android:text="Price:"
                 android:paddingRight="5dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"/>
             <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:id="@+id/product_details_price"/>
+                android:id="@+id/product_details_price"
+                android:textColor="@android:color/holo_orange_dark"/>
 
         </LinearLayout>
 
@@ -73,13 +77,15 @@
                 android:text="Type:"
                 android:paddingRight="5dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"/>
             <TextView
                 android:id="@+id/product_details_type"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Type:"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"/>
         </LinearLayout>
 
         <LinearLayout
@@ -93,7 +99,8 @@
                 android:text="For:"
                 android:paddingRight="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"/>
 
             <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/edit_product_radio_group"
@@ -131,7 +138,8 @@
                 android:text="Seller:"
                 android:paddingRight="5dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"/>
             <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="fill_parent"
@@ -152,7 +160,8 @@
                 android:paddingRight="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/product_details_text_buyer"/>
+                android:id="@+id/product_details_text_buyer"
+                android:textColor="@android:color/holo_orange_dark"/>
             <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="fill_parent"
@@ -169,6 +178,8 @@
                 android:id="@+id/product_details_buy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_orange_dark"
                 android:layout_weight="1"
                 android:text="Buy"/>
             <Button
@@ -176,6 +187,9 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_orange_dark"
+                android:layout_marginLeft="10dp"
                 android:text="Edit"/>
         </LinearLayout>
 

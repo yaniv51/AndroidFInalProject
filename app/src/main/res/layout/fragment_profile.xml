@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="4"
-    android:paddingTop="10dp">
+    android:paddingTop="45dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -12,35 +12,54 @@
         android:layout_height="wrap_content"
         android:weightSum="2">
         <Button
-            android:layout_width="165dp"
+            android:layout_width="160dp"
             android:layout_height="200dp"
             android:text="Purchase History"
             android:id="@+id/purchaseHistoryButton_profile_fragment"
-            android:weightSum="1"/>
+            android:weightSum="1"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_orange_dark"
+            android:textSize="26dp"
+            android:typeface="monospace" />
         <Button
-            android:layout_width="165dp"
+            android:layout_width="160dp"
             android:layout_height="200dp"
             android:text="Sales History"
             android:id="@+id/salesHistoryButton_profile_fragment"
-            android:weightSum="1"/>
+            android:weightSum="1"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_orange_dark"
+            android:layout_marginTop="10dp"
+            android:textSize="26dp"
+            android:typeface="monospace" />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:weightSum="2">
     <Button
         android:layout_width="165dp"
         android:layout_height="200dp"
         android:text="Add Product"
         android:id="@+id/addProductButton_profile_fragment"
-        android:weightSum="1"/>
+        android:weightSum="1"
+        android:textColor="@android:color/white"
+        android:background="@android:color/holo_orange_dark"
+        android:textSize="26dp"
+        android:typeface="monospace" />
     <Button
         android:layout_width="165dp"
         android:layout_height="200dp"
-        android:text="My Product"
+        android:text="My Products"
         android:id="@+id/myProductButton_profile_fragment"
-        android:weightSum="1"/>
+        android:weightSum="1"
+        android:textColor="@android:color/white"
+        android:background="@android:color/holo_orange_dark"
+        android:textSize="26dp"
+        android:layout_marginTop="10dp"
+        android:typeface="monospace" />
     </LinearLayout>
 </LinearLayout>

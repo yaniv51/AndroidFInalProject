@@ -1,10 +1,10 @@
 package com.talkramer.finalproject.fragments;
 
 
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.model.Domain.Product;
@@ -188,7 +187,6 @@ public class GridViewFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView text;
 
             if (convertView == null) {
                 //if it's not recycled, initialize
@@ -202,9 +200,7 @@ public class GridViewFragment extends Fragment {
             if(localProduct == null)
                 return  convertView;
 
-            text = (TextView) convertView.findViewById(R.id.grid_item_text);
             final ImageView image = (ImageView) convertView.findViewById(R.id.grid_item_image);
-            text.setText(""+localProduct.getId());
 
             //if image is null - load online image
             if(localProduct.getImageProduct() == null)

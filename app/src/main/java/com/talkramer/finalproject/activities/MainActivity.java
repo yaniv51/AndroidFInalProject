@@ -96,9 +96,9 @@ public class MainActivity extends ActionBarActivity {
 
             case R.id.home: {
                 GridViewFragment frag = new GridViewFragment();
+                frag.setFilter(Helper.GridProductFilter.ALL_PRODUCTS);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 //clear fragment back stack
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 transaction.add(R.id.main_frag_container, frag, "GridViewFragment");
                 transaction.addToBackStack(null);
                 transaction.commit();
