@@ -53,7 +53,8 @@ public class Model {
             public void notify(List<Product> products) {
                 List<Product> updatedProducts;
                 String lastUpdateDate;
-
+                if(products == null)
+                    return;
                 lastUpdateDate = ProductSql.getLastUpdateDate(sqlModel.getReadbleDB());
                 updatedProducts = updateLocalProducts(products, lastUpdateDate);
 

@@ -154,8 +154,7 @@ public class GridViewFragment extends Fragment {
             //notify adapter list while fragment is resume - check if possible to do only when item removed/edited
             String action = result==Helper.ActionResult.SAVE.ordinal()? "Save":"Delete";
             Log.d("TAG", "GridViewFragment - resume with "+ action +" operation");
-            if(imageAadapter!=null)
-                imageAadapter.notifyDataSetChanged();
+            loadProductsData();
         }
         else
             Log.d("TAG", "GridViewFragment - resume with unknown operation: "+result);

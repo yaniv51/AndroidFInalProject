@@ -200,6 +200,7 @@ public class SignInFragment extends Fragment {
         passwordText.setEnabled(enable);
         signInButton.setEnabled(enable);
         registerButton.setEnabled(enable);
+        forgotPasswordButton.setEnabled(enable);
     }
 
 }
