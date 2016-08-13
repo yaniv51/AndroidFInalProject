@@ -30,21 +30,31 @@ import com.talkramer.finalproject.model.Domain.Product;
  */
 public class GridViewFragment extends Fragment {
     private View view;
-    GridView grid;
-    List<Product> data;
-    ImageAdapter imageAadapter;
-    private static boolean initialize = true;
+    private GridView grid;
+    private List<Product> data;
+    private ImageAdapter imageAadapter;
+    private Model.UpdateProductsListener updateProductsListener;
+    private boolean firstExec;
 
     ProgressBar progressBar;
 
     public GridViewFragment() {
         // Required empty public constructor
+        updateProductsListener = new Model.UpdateProductsListener() {
+            @Override
+            public void notify(List<Product> products) {
+                if(products != null)
+                    loadProductData(products);
+            }
+        };
+        Model.getInstance().setUpdateUIListener(updateProductsListener);
+        firstExec = true;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        Log.d("TAG", "Create grid view");
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_grid_view, container, false);
         grid = (GridView) view.findViewById(R.id.yani_gridview_gridview);
@@ -96,7 +106,12 @@ public class GridViewFragment extends Fragment {
             }
         });
 
-        loadProductsData();
+        if(firstExec)
+        {
+            firstExec = false;
+            loadProductsData();
+        }
+
 
         return view;
     }
@@ -112,6 +127,15 @@ public class GridViewFragment extends Fragment {
                 imageAadapter.notifyDataSetChanged();
             }
         });
+    }
+
+
+    private void loadProductData(List<Product> products)
+    {
+        progressBar.setVisibility(View.VISIBLE);
+        data = products;
+        imageAadapter.notifyDataSetChanged();
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

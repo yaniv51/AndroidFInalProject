@@ -1,6 +1,7 @@
 package com.talkramer.finalproject.model;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -27,6 +28,7 @@ public class ModelFirebase {
     private Firebase myFirebase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private Model.UpdateProductsListener notifyUpdate;
 
     //authentication docs:
     //https://firebase.google.com/docs/auth/android/password-auth
@@ -35,7 +37,13 @@ public class ModelFirebase {
         Firebase.setAndroidContext(context);
         myFirebase = new Firebase("https://finalproject-23ce7.firebaseio.com/");
         mAuth = FirebaseAuth.getInstance();
+        notifyUpdate = null;
         init();
+    }
+
+    public void setNotifyUpdate(Model.UpdateProductsListener listener)
+    {
+        notifyUpdate = listener;
     }
 
     private void init() {
@@ -43,6 +51,12 @@ public class ModelFirebase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("TAG", "VALUE CHANGED" + dataSnapshot.toString());
+                List<Product> products;
+
+                DataSnapshot data = dataSnapshot.child(Helper.productChildren);
+                products = getProductsFromCloud(data);
+                if(notifyUpdate != null)
+                    notifyUpdate.notify(products);
             }
 
             @Override
@@ -137,11 +151,7 @@ public class ModelFirebase {
         prRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Product> prList = new LinkedList<Product>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Product product = snapshot.getValue(Product.class);
-                    prList.add(product);
-                }
+                List<Product> prList = getProductsFromCloud(dataSnapshot);
                 Log.d("TAG", "read " + dataSnapshot.getChildrenCount() + " new products");
                 listener.done(prList);
             }
@@ -151,6 +161,21 @@ public class ModelFirebase {
                 listener.done(null);
             }
         });
+    }
+
+    private List<Product> getProductsFromCloud(DataSnapshot dataSnapshot)
+    {
+        List<Product> products = null;
+
+        if(dataSnapshot == null)
+            return  products;
+
+        products = new LinkedList<Product>();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            Product product = snapshot.getValue(Product.class);
+            products.add(product);
+        }
+        return  products;
     }
 
     public void getMaxItem(final Model.GetMaxProductIdListener listener)

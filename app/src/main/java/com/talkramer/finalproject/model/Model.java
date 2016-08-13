@@ -23,8 +23,7 @@ public class Model {
     private ModelCloudinary cloudinary;
     private FileManagerHelper fileManager;
     private ModelSql sqlModel;
-
-    private boolean firstInit = false;
+    private UpdateProductsListener firebaseListener, uiListener;
 
     List<Product> data;
 
@@ -36,7 +35,7 @@ public class Model {
         fileManager = new FileManagerHelper(ApplicationStartup.getAppContext());
         sqlModel = new ModelSql(ApplicationStartup.getAppContext());
 
-        //ProductSql.drop(sqlModel.getWritableDB());
+        initializeListeners();
     }
 
     public static Model getInstance()
@@ -45,6 +44,29 @@ public class Model {
             instance = new Model();
 
         return instance;
+    }
+
+    private void initializeListeners()
+    {
+        firebaseListener = new UpdateProductsListener() {
+            @Override
+            public void notify(List<Product> products) {
+                List<Product> updatedProducts;
+                String lastUpdateDate;
+
+                lastUpdateDate = ProductSql.getLastUpdateDate(sqlModel.getReadbleDB());
+                updatedProducts = updateLocalProducts(products, lastUpdateDate);
+
+                if(uiListener != null)
+                    uiListener.notify(updatedProducts);
+            }
+        };
+        firebaseModel.setNotifyUpdate(firebaseListener);
+    }
+
+    public void setUpdateUIListener(UpdateProductsListener listener)
+    {
+        uiListener = listener;
     }
 
     public void loadImage(final Product product, final LoadImageListener listener) {
@@ -78,27 +100,36 @@ public class Model {
             @Override
             public void done(List<Product> products) {
                 List<Product> res = null;
-                if(products != null && products.size() > 0) {
-                    //update the local DB
-                    String reacentUpdate = lastUpdateDate;
-                    for (Product p : products) {
-                        //update DB and image cach
-                        cachUpdate(p);
-                        if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
-                            reacentUpdate = p.getLastUpdated();
-                        }
-                        Log.d("TAG","updating: " + p.toString());
-                    }
-                    ProductSql.setLastUpdateDate(sqlModel.getWritableDB(), reacentUpdate);
-                    res = ProductSql.getAllProducts(sqlModel.getReadbleDB());
-                }
-                //return the complete product list to the caller
+
+                res = updateLocalProducts(products, lastUpdateDate);
+
                 if(res == null)
-                    res = new LinkedList<Product>();
+                    return;
+
                 data = res;
                 listener.done(res);
             }
         });
+    }
+
+    private List<Product> updateLocalProducts(List<Product> products, String lastUpdateDate)
+    {
+        List<Product> res = null;
+        if(products != null && products.size() > 0) {
+            //update the local DB
+            String reacentUpdate = lastUpdateDate;
+            for (Product p : products) {
+                //update DB and image cach
+                cachUpdate(p);
+                if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
+                    reacentUpdate = p.getLastUpdated();
+                }
+                Log.d("TAG","updating: " + p.toString());
+            }
+            ProductSql.setLastUpdateDate(sqlModel.getWritableDB(), reacentUpdate);
+            res = ProductSql.getAllProducts(sqlModel.getReadbleDB());
+        }
+        return res;
     }
 
 
@@ -260,5 +291,10 @@ public class Model {
     {
         void success(int counter);
         void fail(String msg);
+    }
+
+    public interface UpdateProductsListener
+    {
+        void notify(List<Product> products);
     }
 }
