@@ -106,7 +106,7 @@ public class Model {
                     return;
 
                 listener.done(res);
-                removeProducts();
+                //removeProducts();
             }
         });
     }
@@ -308,6 +308,7 @@ public class Model {
         firebaseModel.updateProduct(product, listener);
     }
 
+    //Firebase users
     public String getUserId() {return firebaseModel.getUserId();}
 
     public String getUserEmail() {return firebaseModel.getUserEmail();}
@@ -331,6 +332,7 @@ public class Model {
         firebaseModel.resetPassword(email, listener);
     }
 
+    //public interfaces for listeners
     public interface GetProductsListenerInterface {
         void done(List<Product> prList);
     }
