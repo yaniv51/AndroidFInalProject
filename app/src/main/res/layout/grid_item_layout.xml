@@ -29,6 +29,11 @@
                 android:paddingTop="25dp"
                 android:visibility="gone"/>
         </FrameLayout>
+        <TextView
+            android:id="@+id/grid_item_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="" />
     </LinearLayout>
 
 

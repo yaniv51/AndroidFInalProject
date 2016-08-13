@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
 import com.talkramer.finalproject.model.Domain.Product;
@@ -203,7 +204,8 @@ public class GridViewFragment extends Fragment {
                 return  convertView;
 
             final ImageView image = (ImageView) convertView.findViewById(R.id.grid_item_image);
-
+            final TextView text = (TextView) convertView.findViewById(R.id.grid_item_text);
+            text.setText("Price: "+localProduct.getPrice());
             //if image is null - load online image
             if(localProduct.getImageProduct() == null)
             {
