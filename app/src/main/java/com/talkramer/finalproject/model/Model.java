@@ -137,17 +137,15 @@ public class Model {
     public void add(final Product newProduct, final OperationListener listener)
     {
         newProduct.setLastUpdated(getCurrentDate());
-
         //get cloud counter for set new product ID
         firebaseModel.getMaxItem(new GetMaxProductIdListener() {
             @Override
             public void success(int counter) {
                 newProduct.setId((counter+1) +"");
-                firebaseModel.addNewProduct(newProduct, new OperationListener() {
+                cloudinaryUpdate(newProduct, new OperationListener() {
                     @Override
                     public void success() {
-                        cachUpdate(newProduct);
-                        cloudinaryUpdate(newProduct, new OperationListener() {
+                        firebaseModel.addNewProduct(newProduct, new OperationListener() {
                             @Override
                             public void success() {
                                 listener.success();
