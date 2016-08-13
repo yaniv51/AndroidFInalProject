@@ -124,8 +124,9 @@ public class NewProductFragment extends Fragment {
         {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap)extras.get("data");
-            imageButton.setImageBitmap(imageBitmap);
-            image = imageBitmap;
+            Bitmap resize = Bitmap.createScaledBitmap(imageBitmap, 400,400,true);
+            imageButton.setImageBitmap(resize);
+            image = resize;
         }
     }
 

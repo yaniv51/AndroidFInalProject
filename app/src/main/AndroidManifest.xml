@@ -16,8 +16,8 @@
         android:name=".ApplicationStartup"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@android:color/transparent"
-        android:label="My First Shop"
+        android:icon="@drawable/clothes_hanger"
+        android:label="My Shop"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
