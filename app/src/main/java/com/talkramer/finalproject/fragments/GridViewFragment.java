@@ -21,6 +21,7 @@ import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Model;
 import com.talkramer.finalproject.model.Utils.Helper;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,11 +38,14 @@ public class GridViewFragment extends Fragment {
 
     private boolean firstExec;
     private Helper.GridProductFilter filter;
+    private HashMap<String, String> searchFilter;
 
     public void setFilter(Helper.GridProductFilter newFilter)
     {
         filter = newFilter;
     }
+
+    public void setSearchFilter(HashMap<String, String> newFilter) { searchFilter = newFilter; }
 
     public GridViewFragment() {
         updateProductsListener = new Model.UpdateProductsListener() {
@@ -53,6 +57,7 @@ public class GridViewFragment extends Fragment {
         };
         Model.getInstance().setUpdateUIListener(updateProductsListener);
         firstExec = true;
+        searchFilter = null;
     }
 
     @Override
@@ -110,7 +115,7 @@ public class GridViewFragment extends Fragment {
         Model.getInstance().getAllProductsAsync(new Model.GetProductsListenerInterface() {
             @Override
             public void done(List<Product> products) {
-                data = Model.getInstance().getFilterProducts(filter);
+                data = Model.getInstance().getFilterProducts(filter, searchFilter);
                 progressBar.setVisibility(View.GONE);
                 imageAadapter.notifyDataSetChanged();
             }
@@ -121,7 +126,7 @@ public class GridViewFragment extends Fragment {
     private void loadProductData(List<Product> products)
     {
         smallProgressbar.setVisibility(View.VISIBLE);
-        data = Model.getInstance().getFilterProducts(filter);
+        data = Model.getInstance().getFilterProducts(filter, searchFilter);
         imageAadapter.notifyDataSetChanged();
         Thread thread = new Thread() {
             @Override

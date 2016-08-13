@@ -29,7 +29,10 @@ public class Helper {
     public static final String ProductId = "PRODUCT_ID";
     public static final String OPERATION = "OPERATION";
     public static final int REQUEST_IMAGE_CAPTURE = 1;
-
     public static final String productChildren = "product";
     public static final String counterChildren = "counter";
+    public static final String PRICE = "PRICE";
+    public static final String DESCRIPTION = "DESCRIPTION";
+    public static final String GENDER = "GENDER";
+    public static final String TYPE = "TYPE";
 }

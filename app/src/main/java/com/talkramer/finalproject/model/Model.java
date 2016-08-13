@@ -11,6 +11,7 @@ import com.talkramer.finalproject.model.Domain.ProductSql;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
@@ -214,7 +215,7 @@ public class Model {
         return ProductSql.getProductById(sqlModel.getReadbleDB(), id);
     }
 
-    public List<Product> getFilterProducts(Helper.GridProductFilter filter)
+    public List<Product> getFilterProducts(Helper.GridProductFilter filter, HashMap<String, String> searchFilter)
     {
         List<Product> products;
 
@@ -242,7 +243,7 @@ public class Model {
             }
             case SEARCH:
             {
-                products = new LinkedList<Product>();
+                products = ProductSql.getProductsByCustomSearch(sqlModel.getReadbleDB(), searchFilter);
                 break;
             }
             default:

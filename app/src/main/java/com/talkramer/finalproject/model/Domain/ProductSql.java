@@ -4,9 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.util.StringBuilderPrinter;
 
 import com.talkramer.finalproject.model.Utils.Helper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,9 +65,6 @@ public class ProductSql {
         where = PRODUCT_TABLE_DELETED + " = ? and " + PRODUCT_BUYER + " == ?";
         String[] args = {"0", ""};
 
-        //where = PRODUCT_TABLE_DELETED + " = ?";
-        //String[] args = {"0"};
-
         cursor = db.query(PRODUCT_TABLE, null, where , args, null, null, null);
         products = getProductsByCursor(cursor);
         return products;
@@ -107,6 +107,67 @@ public class ProductSql {
 
         products = getProductsByCursor(cursor);
         return products;
+    }
+
+    public static List<Product> getProductsByCustomSearch(SQLiteDatabase db, HashMap<String, String> filter)
+    {
+        String where;
+        ArrayList<String> args;
+        List<Product> products;
+        StringBuilder queryBuilder;
+        Cursor cursor;
+        int counter;
+
+        args = new ArrayList<String>();
+        queryBuilder = new StringBuilder();
+        counter = 0;
+        for(String key :filter.keySet())
+        {
+            String query;
+            if(counter > 0)
+                queryBuilder.append(" and ");
+
+            String value = filter.get(key);
+            if(key.compareTo(Helper.PRICE) == 0)
+            {
+                String[] prices = value.split("-");
+                query = PRODUCT_TABLE_PRICE + " > ? and " +PRODUCT_TABLE_PRICE+" < ?";
+                args.add(prices[0]);
+                args.add(prices[1]);
+                queryBuilder.append(query);
+            }
+            else if(key.compareTo(Helper.GENDER) == 0)
+            {
+                query = PRODUCT_TABLE_FOR_WHOM + " = ?";
+                args.add(value);
+                queryBuilder.append(query);
+            }
+            else if(key.compareTo(Helper.TYPE) == 0)
+            {
+                query = PRODUCT_TABLE_TYPE + " = ?";
+                args.add(value);
+                queryBuilder.append(query);
+            }
+            else if(key.compareTo(Helper.DESCRIPTION) == 0)
+            {
+                query = PRODUCT_TABLE_DESCRIPTION + " LIKE ?";
+                value = "%"+value+"%";
+                args.add(value);
+                queryBuilder.append(query);
+            }
+            counter++;
+        }
+
+        queryBuilder.append(" and "+PRODUCT_TABLE_DELETED + " = ? and " + PRODUCT_BUYER + " = ?");
+        args.add("0");
+        args.add("");
+
+        where = queryBuilder.toString();
+        String[] newArgs = new String[args.size()];
+        newArgs = args.toArray(newArgs);
+        cursor = db.query(PRODUCT_TABLE, null, where, newArgs, null, null, null);
+        products = getProductsByCursor(cursor);
+        return  products;
     }
 
     private static List<Product> getProductsByCursor(Cursor cursor)

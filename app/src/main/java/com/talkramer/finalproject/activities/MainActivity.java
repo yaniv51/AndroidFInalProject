@@ -11,11 +11,14 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseUser;
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.dialogs.SearchDialog;
 import com.talkramer.finalproject.fragments.ProfileFragment;
 import com.talkramer.finalproject.fragments.GridViewFragment;
 import com.talkramer.finalproject.fragments.SignInFragment;
 import com.talkramer.finalproject.model.Model;
 import com.talkramer.finalproject.model.Utils.Helper;
+
+import java.util.HashMap;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -66,6 +69,28 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.search: {
+                SearchDialog dialog = new SearchDialog();
+                dialog.setDelegate(new SearchDialog.SearchActionDelegate() {
+                    @Override
+                    public void ok(HashMap<String, String> filter) {
+                        GridViewFragment frag = new GridViewFragment();
+                        frag.setFilter(Helper.GridProductFilter.SEARCH);
+                        frag.setSearchFilter(filter);
+
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                        transaction.replace(R.id.main_frag_container, frag);
+                        transaction.addToBackStack(null);
+                        // Commit the transaction
+                        transaction.commit();
+                    }
+
+                    @Override
+                    public void cancle() {
+
+                    }
+                });
+                dialog.show(getFragmentManager(), "GGG");
                 break;
             }
 
