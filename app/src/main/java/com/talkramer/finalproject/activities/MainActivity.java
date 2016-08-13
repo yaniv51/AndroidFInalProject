@@ -81,8 +81,7 @@ public class MainActivity extends ActionBarActivity {
                 ProfileFragment frag = new ProfileFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 //clear fragment back stack
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                transaction.add(R.id.main_frag_container, frag, "profile");
+                transaction.add(R.id.main_frag_container, frag, "ProfileFragment");
                 transaction.commit();
                 break;
             }

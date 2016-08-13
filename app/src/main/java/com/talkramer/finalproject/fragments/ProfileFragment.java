@@ -1,7 +1,9 @@
 package com.talkramer.finalproject.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +35,12 @@ public class ProfileFragment extends Fragment {
         addProductButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.d("TAG", "ProfileFragment - clicked on add product");
+                Fragment frag = new NewProductFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                //clear fragment back stack
+                transaction.add(R.id.main_frag_container, frag, "NewProductFragment");
+                transaction.commit();
             }
         });
 
