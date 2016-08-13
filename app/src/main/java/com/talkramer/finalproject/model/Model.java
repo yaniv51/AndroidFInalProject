@@ -147,8 +147,17 @@ public class Model {
                     @Override
                     public void success() {
                         cachUpdate(newProduct);
-                        cloudinaryUpdate(newProduct);
-                        listener.success();
+                        cloudinaryUpdate(newProduct, new OperationListener() {
+                            @Override
+                            public void success() {
+                                listener.success();
+                            }
+
+                            @Override
+                            public void fail(String msg) {
+                                listener.fail(msg);
+                            }
+                        });
                     }
 
                     @Override
@@ -178,9 +187,9 @@ public class Model {
         return  dateFormatGmt.format(date).toString();
     }
 
-    private void cloudinaryUpdate(Product newProduct)
+    private void cloudinaryUpdate(Product newProduct, OperationListener listener)
     {
-        cloudinary.uploadImage(newProduct.getId(), newProduct.getImageProduct());
+        cloudinary.uploadImage(newProduct.getId(), newProduct.getImageProduct(), listener);
     }
 
     private void cachUpdate(Product newProduct)
@@ -219,10 +228,24 @@ public class Model {
         }
         if(updatedProduct != null)
         {
-            firebaseModel.updateProduct(updatedProduct, listener);
-            cloudinaryUpdate(updatedProduct);
-            cachUpdate(updatedProduct);
+            asyncUpdateProduct(updatedProduct, listener);
         }
+    }
+
+    public void asyncUpdateProduct(final Product product, final OperationListener listener)
+    {
+        cloudinaryUpdate(product, new OperationListener() {
+            @Override
+            public void success() {
+                firebaseModel.updateProduct(product, listener);
+                cachUpdate(product);
+            }
+
+            @Override
+            public void fail(String msg) {
+                listener.fail(msg);
+            }
+        });
     }
 
     public List<Product> getProducts(){
