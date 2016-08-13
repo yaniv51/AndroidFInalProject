@@ -40,6 +40,7 @@ public class ProfileFragment extends Fragment {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 //clear fragment back stack
                 transaction.add(R.id.main_frag_container, frag, "NewProductFragment");
+                transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
