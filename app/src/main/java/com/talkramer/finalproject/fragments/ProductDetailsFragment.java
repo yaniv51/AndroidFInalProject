@@ -25,7 +25,7 @@ import com.talkramer.finalproject.model.Utils.Helper;
  * A simple {@link Fragment} subclass.
  */
 public class ProductDetailsFragment extends Fragment {
-    private TextView description, price, seller, type;
+    private TextView description, price, seller, type, buyer, buyerText;
     private RadioButton menRadio, womenRadio, unisexRadio;
     private Button buyButton, editButton;
     private ProgressBar progressBar;
@@ -66,10 +66,12 @@ public class ProductDetailsFragment extends Fragment {
                         emailIntent.setType("plain/text");
                         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{currentProduct.getSellerEmail()});
                         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "BUY");
-                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hi I want to buy your product with description: "+ currentProduct.getDescription());
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hi I want to buy your product with description: " + currentProduct.getDescription());
                         /* Send it off to the Activity-Chooser */
                         startActivity(Intent.createChooser(emailIntent, "Send Email..."));
                         showMessage("Congratulation! You bought the product.");
+                        buyerText.setVisibility(view.VISIBLE);
+                        UpdateProductOnUI();
                     }
 
                     @Override
@@ -107,7 +109,9 @@ public class ProductDetailsFragment extends Fragment {
         womenRadio = (RadioButton) view.findViewById(R.id.product_details_radio_women);
         unisexRadio = (RadioButton) view.findViewById(R.id.product_details_radio_unisex);
         imageView = (ImageView) view.findViewById(R.id.product_details_imageView);
-
+        buyer = (TextView) view.findViewById(R.id.product_details_buyer);
+        buyerText = (TextView) view.findViewById(R.id.product_details_text_buyer);
+        buyerText.setVisibility(view.INVISIBLE);
         UpdateProductOnUI();
         return  view;
     }
@@ -157,7 +161,9 @@ public class ProductDetailsFragment extends Fragment {
         description.setText(currentProduct.getDescription());
         price.setText("" + currentProduct.getPrice());
         seller.setText(currentProduct.getSellerEmail());
-
+        if(currentProduct.getBuyerEmail() != null && currentProduct.getBuyerEmail().compareTo("") !=0) {
+            buyer.setText(currentProduct.getBuyerEmail());
+        }
         customer = currentProduct.getForWhom();
         menRadio.setChecked(customer == Helper.Customers.MEN);
         womenRadio.setChecked(customer == Helper.Customers.WOMEN);
