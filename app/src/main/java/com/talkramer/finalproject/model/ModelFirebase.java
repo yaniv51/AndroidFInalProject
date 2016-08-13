@@ -104,6 +104,13 @@ public class ModelFirebase {
         updateProduct(product, listener);
     }
 
+    public void hardRemove(final Product product)
+    {
+        Firebase prFef = myFirebase.child(Helper.productChildren).child(product.getId());
+
+        prFef.removeValue();
+    }
+
     public void updateProduct(Product product, Model.OperationListener listener)
     {
         try

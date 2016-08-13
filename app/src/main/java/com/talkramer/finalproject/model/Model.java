@@ -106,8 +106,25 @@ public class Model {
                     return;
 
                 listener.done(res);
+                removeProducts();
             }
         });
+    }
+
+    private void removeProducts()
+    {
+        for(int i = 1; i< 14; i++)
+        {
+            Product p = ProductSql.getProductById(sqlModel.getReadbleDB(), i+"");
+            if(p== null)
+                continue;;
+            //delete SQL
+            boolean removed = ProductSql.deleteById(sqlModel.getWritableDB(), p.getId());
+            //DELETE FIREBASE
+            //firebaseModel.hardRemove(p);
+            //DELETE IMAGES
+            fileManager.removeImage(p.getId());
+        }
     }
 
     private List<Product> updateLocalProducts(List<Product> products, String lastUpdateDate)
