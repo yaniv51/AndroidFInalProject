@@ -8,14 +8,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.talkramer.finalproject.ApplicationStartup;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Domain.ProductSql;
+import com.talkramer.finalproject.model.Utils.FileManagerHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
-
-import com.talkramer.finalproject.model.Utils.FileManagerHelper;
 public class Model {
 
     private static Model instance;
@@ -120,12 +119,14 @@ public class Model {
             //update the local DB
             String reacentUpdate = lastUpdateDate;
             for (Product p : products) {
-                //update DB and image cach
-                cachUpdate(p);
-                if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
-                    reacentUpdate = p.getLastUpdated();
+                if (!p.getDeleted()) {
+                    //update DB and image cach
+                    cachUpdate(p);
+                    if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
+                        reacentUpdate = p.getLastUpdated();
+                    }
+                    Log.d("TAG", "updating: " + p.toString());
                 }
-                Log.d("TAG","updating: " + p.toString());
             }
             ProductSql.setLastUpdateDate(sqlModel.getWritableDB(), reacentUpdate);
             res = ProductSql.getAllProducts(sqlModel.getReadbleDB());

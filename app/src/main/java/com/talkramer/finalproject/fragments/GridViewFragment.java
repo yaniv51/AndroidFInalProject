@@ -1,30 +1,27 @@
 package com.talkramer.finalproject.fragments;
 
 
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.model.Domain.Product;
+import com.talkramer.finalproject.model.Model;
+import com.talkramer.finalproject.model.Utils.Helper;
 
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
-
-import com.talkramer.finalproject.model.Utils.Helper;
-import com.talkramer.finalproject.model.Model;
-import com.talkramer.finalproject.model.Domain.Product;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,25 +80,8 @@ public class GridViewFragment extends Fragment {
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack
-                transaction.replace(R.id.main_frag_container, newFragment);
-                transaction.addToBackStack(null);
-                // Commit the transaction
-                transaction.commit();
-            }
-        });
 
-        Button addProductButton = (Button) view.findViewById(R.id.grid_view_add_product);
-        addProductButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TAG", "GridViewFragment - clicked on add product");
-
-                Fragment newFragment = new NewProductFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
-                transaction.replace(R.id.main_frag_container, newFragment);
+                transaction.add(R.id.main_frag_container, newFragment, "ProductDetailsFragment");
                 transaction.addToBackStack(null);
                 // Commit the transaction
                 transaction.commit();

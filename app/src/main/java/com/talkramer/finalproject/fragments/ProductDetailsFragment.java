@@ -1,10 +1,11 @@
 package com.talkramer.finalproject.fragments;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +17,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
-
-import com.talkramer.finalproject.model.Utils.Helper;
-import com.talkramer.finalproject.model.Model;
 import com.talkramer.finalproject.model.Domain.Product;
+import com.talkramer.finalproject.model.Model;
+import com.talkramer.finalproject.model.Utils.Helper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,7 +61,16 @@ public class ProductDetailsFragment extends Fragment {
                     public void success() {
                         setEnable(true);
                         buyButton.setEnabled(false);
-                        showMessage("Product marked as bought. Please contact seller on: \n" + currentProduct.getSellerEmail());
+                        /* Create the Intent */
+                        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        /* Fill it with Data */
+                        emailIntent.setType("plain/text");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{currentProduct.getSellerEmail()});
+                        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "BUY");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hi I want to buy your product with description: "+ currentProduct.getDescription());
+                        /* Send it off to the Activity-Chooser */
+                        startActivity(Intent.createChooser(emailIntent, "Send Email..."));
+                        showMessage("Congratulation! You bought the product.");
                     }
 
                     @Override
@@ -83,7 +92,7 @@ public class ProductDetailsFragment extends Fragment {
                 Fragment newFragment = new EditProductFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.main_frag_container, newFragment);
+                transaction.add(R.id.main_frag_container, newFragment, "EditProductFragment");
                 transaction.addToBackStack(null);
                 // Commit the transaction
                 transaction.commit();

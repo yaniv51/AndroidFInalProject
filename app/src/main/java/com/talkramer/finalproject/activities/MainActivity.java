@@ -73,6 +73,7 @@ public class MainActivity extends ActionBarActivity {
                 //clear fragment back stack
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 transaction.add(R.id.main_frag_container, frag, "GridViewFragment");
+                transaction.addToBackStack(null);
                 transaction.commit();
                 break;
             }
@@ -82,6 +83,7 @@ public class MainActivity extends ActionBarActivity {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 //clear fragment back stack
                 transaction.add(R.id.main_frag_container, frag, "ProfileFragment");
+                transaction.addToBackStack(null);
                 transaction.commit();
                 break;
             }
