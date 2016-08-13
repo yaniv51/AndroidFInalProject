@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.talkramer.finalproject.R;
 
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 
 import com.talkramer.finalproject.model.Utils.Helper;
 import com.talkramer.finalproject.model.Model;
@@ -36,7 +37,7 @@ public class GridViewFragment extends Fragment {
     private Model.UpdateProductsListener updateProductsListener;
     private boolean firstExec;
 
-    ProgressBar progressBar;
+    ProgressBar progressBar, smallProgressbar;
 
     public GridViewFragment() {
         // Required empty public constructor
@@ -64,6 +65,7 @@ public class GridViewFragment extends Fragment {
 
         //TODO: add progressbar
         progressBar = (ProgressBar)view.findViewById(R.id.mainProgressBar);
+        smallProgressbar = (ProgressBar) view.findViewById(R.id.small_progress_bar);
 
         grid.setAdapter(imageAadapter);
 
@@ -132,10 +134,26 @@ public class GridViewFragment extends Fragment {
 
     private void loadProductData(List<Product> products)
     {
-        progressBar.setVisibility(View.VISIBLE);
+        smallProgressbar.setVisibility(View.VISIBLE);
         data = products;
         imageAadapter.notifyDataSetChanged();
-        progressBar.setVisibility(View.GONE);
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                }
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        smallProgressbar.setVisibility(View.GONE);
+                    }
+                });
+            }
+        };
+        thread.start();
     }
 
     @Override
