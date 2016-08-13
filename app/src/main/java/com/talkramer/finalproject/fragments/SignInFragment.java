@@ -191,7 +191,7 @@ public class SignInFragment extends Fragment {
         frag.setFilter(Helper.GridProductFilter.ALL_PRODUCTS);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.main_frag_container, frag);
+        transaction.replace(R.id.main_frag_container, frag, Helper.GRID_VIEW_NO_FILTER_TAG);
         // Commit the transaction
         transaction.commit();
     }

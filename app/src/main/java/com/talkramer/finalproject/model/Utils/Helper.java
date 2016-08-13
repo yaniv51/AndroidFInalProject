@@ -35,4 +35,6 @@ public class Helper {
     public static final String DESCRIPTION = "DESCRIPTION";
     public static final String GENDER = "GENDER";
     public static final String TYPE = "TYPE";
+
+    public static final String GRID_VIEW_NO_FILTER_TAG = "GridViewFragment-All";
 }

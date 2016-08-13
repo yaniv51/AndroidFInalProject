@@ -44,6 +44,8 @@ public class GridViewFragment extends Fragment {
         filter = newFilter;
     }
 
+    public Helper.GridProductFilter getFilter() {return filter;}
+
     public void setSearchFilter(HashMap<String, String> newFilter) { searchFilter = newFilter; }
 
     public GridViewFragment() {
