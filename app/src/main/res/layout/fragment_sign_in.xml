@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.talkramer.finalproject.fragments.SignInFragment">
 
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
@@ -12,12 +13,19 @@
     android:padding="10dp"
     tools:context=".main"
     android:layout_gravity="start|bottom">
+        <ImageView
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:src="@drawable/clothes_hanger"
+            android:layout_marginLeft="45dp"
+            android:id="@+id/image_signIn_fragment"/>
 
         <EditText
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
+            android:layout_marginTop="60dp"
             android:id="@+id/email_signIn_fragment"/>
 
         <EditText
@@ -27,23 +35,37 @@
             android:inputType="textPassword"
             android:id="@+id/password_signIn_fragment"/>
 
-        <Button
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign In"
-            android:id="@+id/signInButton_signIn_fragment"/>
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sign In"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_orange_dark"
+                android:id="@+id/signInButton_signIn_fragment"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_orange_dark"
+                android:layout_marginLeft="58dp"
+                android:text="Forgot your password?"
+                android:id="@+id/forgotPassword_signIn_fragment" />
+
+        </LinearLayout>
+
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Register"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_orange_dark"
+            android:layout_marginTop="5dp"
             android:id="@+id/registerButton_signIn_fragment"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Forgot your password?"
-            android:id="@+id/forgotPassword_signIn_fragment" />
         </LinearLayout>
 
 
