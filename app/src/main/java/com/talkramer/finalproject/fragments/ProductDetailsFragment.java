@@ -1,5 +1,6 @@
 package com.talkramer.finalproject.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -94,7 +95,7 @@ public class ProductDetailsFragment extends Fragment {
                 Fragment newFragment = new EditProductFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.add(R.id.main_frag_container, newFragment, "EditProductFragment");
+                transaction.replace(R.id.main_frag_container, newFragment, "EditProductFragment");
                 transaction.addToBackStack(null);
                 // Commit the transaction
                 transaction.commit();
@@ -136,14 +137,20 @@ public class ProductDetailsFragment extends Fragment {
         else if(result == Helper.ActionResult.DELETE.ordinal())
         {
             Log.d("TAG", "ProductDetailsFragment - resume with Delete operation");
+            //buyerText.setVisibility(view.VISIBLE);
             Model.getInstance().delete(currentProduct, new Model.OperationListener() {
                 @Override
-                public void success() { }
+                public void success() {
+                    //buyerText.setVisibility(view.GONE);
+                    //close current fragment and open the last one
+                    getFragmentManager().popBackStack();
+                }
 
                 @Override
-                public void fail(String msg) { } });
-            //close current fragment and open the last one
-            getFragmentManager().popBackStack();
+                public void fail(String msg) {
+                    showMessage(msg);
+                } });
+            //getFragmentManager().popBackStack();
         }
         else
             Log.d("TAG", "ProductDetailsFragment - resume with unknown operation: "+result);
@@ -165,6 +172,20 @@ public class ProductDetailsFragment extends Fragment {
         if(currentProduct.getBuyerEmail() != null && currentProduct.getBuyerEmail().compareTo("") !=0) {
             buyer.setText(currentProduct.getBuyerEmail());
         }
+
+        if(currentProduct.getSellerEmail() != null)
+        {
+            if(currentProduct.getSellerEmail().compareTo(Model.getInstance().getUserEmail()) != 0) {
+                editButton.setEnabled(false);
+                editButton.setVisibility(View.GONE);
+            }
+            else
+            {
+                buyButton.setEnabled(false);
+                buyButton.setVisibility(View.GONE);
+            }
+        }
+
         customer = currentProduct.getForWhom();
         menRadio.setChecked(customer == Helper.Customers.MEN);
         womenRadio.setChecked(customer == Helper.Customers.WOMEN);
