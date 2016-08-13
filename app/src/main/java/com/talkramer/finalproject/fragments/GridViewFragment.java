@@ -203,6 +203,11 @@ public class GridViewFragment extends Fragment {
                 //Log.d("TAG","list gets image " + localProduct.getId());
                 final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.grid_item_progressbar);
                 progress.setVisibility(View.VISIBLE);
+                if(localProduct.getId().compareTo("19") == 0)
+                {
+                    int a=1;
+                    a++;
+                }
                 Model.getInstance().loadImage(localProduct,new Model.LoadImageListener() {
                     @Override
                     public void onResult(String id, Bitmap imageBmp) {

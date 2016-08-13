@@ -57,7 +57,7 @@ public class Model {
                     return;
                 lastUpdateDate = ProductSql.getLastUpdateDate(sqlModel.getReadbleDB());
                 updatedProducts = updateLocalProducts(products, lastUpdateDate);
-
+                data = updatedProducts;
                 if(uiListener != null)
                     uiListener.notify(updatedProducts);
             }
