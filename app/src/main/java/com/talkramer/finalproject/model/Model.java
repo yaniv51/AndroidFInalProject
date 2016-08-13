@@ -27,11 +27,8 @@ public class Model {
     private ModelSql sqlModel;
     private UpdateProductsListener firebaseListener, uiListener;
 
-    List<Product> data;
-
     private Model()
     {
-        data = new LinkedList<Product>();
         firebaseModel = new ModelFirebase(ApplicationStartup.getAppContext());
         cloudinary = new ModelCloudinary(ApplicationStartup.getAppContext());
         fileManager = new FileManagerHelper(ApplicationStartup.getAppContext());
@@ -59,7 +56,6 @@ public class Model {
                     return;
                 lastUpdateDate = ProductSql.getLastUpdateDate(sqlModel.getReadbleDB());
                 updatedProducts = updateLocalProducts(products, lastUpdateDate);
-                data = updatedProducts;
                 if(uiListener != null)
                     uiListener.notify(updatedProducts);
             }
@@ -109,7 +105,6 @@ public class Model {
                 if(res == null)
                     return;
 
-                data = res;
                 listener.done(res);
             }
         });
@@ -199,14 +194,7 @@ public class Model {
     }
 
     public Product getProduct(String id){
-        for (int i=0; i<data.size(); i++) {
-            Product product = data.get(i);
-
-            if(product.getId().equals(id)){
-                return product;
-            }
-        }
-        return null;
+        return ProductSql.getProductById(sqlModel.getReadbleDB(), id);
     }
 
     public List<Product> getFilterProducts(Helper.GridProductFilter filter)
@@ -232,7 +220,7 @@ public class Model {
             }
             case PURCH_HISTORY:
             {
-                products = ProductSql.getSaleHistoryForUser(sqlModel.getReadbleDB(), getUserEmail());
+                products = ProductSql.getProductsByBuyer(sqlModel.getReadbleDB(), getUserEmail());
                 break;
             }
             case SEARCH:
@@ -253,23 +241,20 @@ public class Model {
     {
         Product updatedProduct = null;
 
-        for(int i=0; i<data.size(); i++) {
-            updatedProduct = data.get(i);
-
-            if (updatedProduct.getId().compareTo(productId) == 0) {
-                updatedProduct.setType(newProduct.getType());
-                updatedProduct.setDescription(newProduct.getDescription());
-                updatedProduct.setPrice(newProduct.getPrice());
-                updatedProduct.setForWhom(newProduct.getForWhom());
-                updatedProduct.setImageProduct(newProduct.getImageProduct());
-                updatedProduct.setLastUpdated(getCurrentDate());
-                break;
-            }
-        }
+        updatedProduct = ProductSql.getProductById(sqlModel.getReadbleDB(), productId);
         if(updatedProduct != null)
         {
+            updatedProduct.setType(newProduct.getType());
+            updatedProduct.setDescription(newProduct.getDescription());
+            updatedProduct.setPrice(newProduct.getPrice());
+            updatedProduct.setForWhom(newProduct.getForWhom());
+            updatedProduct.setImageProduct(newProduct.getImageProduct());
+            updatedProduct.setLastUpdated(getCurrentDate());
+
             asyncUpdateProduct(updatedProduct, listener);
         }
+        else
+            listener.fail("Could not found product");
     }
 
     public void asyncUpdateProduct(final Product product, final OperationListener listener)
@@ -288,13 +273,8 @@ public class Model {
         });
     }
 
-    public List<Product> getProducts(){
-        return data;
-    }
-
     public void delete(Product product, Model.OperationListener listener){
         product.setDeleted(true);
-        data.remove(product);
         fileManager.removeImage(product.getId());
         boolean removed = ProductSql.deleteById(sqlModel.getWritableDB(), product.getId());
 

@@ -57,8 +57,15 @@ public class ProductSql {
     public static List<Product> getAllProducts(SQLiteDatabase db) {
         Cursor cursor;
         List<Product> products;
+        String where;
 
-        cursor = db.query(PRODUCT_TABLE, null, null , null, null, null, null);
+        where = PRODUCT_TABLE_DELETED + " = ? and " + PRODUCT_BUYER + " == ?";
+        String[] args = {"0", ""};
+
+        //where = PRODUCT_TABLE_DELETED + " = ?";
+        //String[] args = {"0"};
+
+        cursor = db.query(PRODUCT_TABLE, null, where , args, null, null, null);
         products = getProductsByCursor(cursor);
         return products;
     }
@@ -82,7 +89,7 @@ public class ProductSql {
         List<Product> products;
 
         String[] args = {sellerId, ""};
-        where = PRODUCT_TABEL_SELLER_ID + " = ? and " + PRODUCT_BUYER + " != ?";
+        where = PRODUCT_TABEL_SELLER_ID + " = ? and " + PRODUCT_BUYER + " != ?" ;
         cursor = db.query(PRODUCT_TABLE, null, where, args, null, null, null);
 
         products = getProductsByCursor(cursor);

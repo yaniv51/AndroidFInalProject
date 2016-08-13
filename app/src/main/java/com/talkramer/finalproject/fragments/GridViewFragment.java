@@ -1,10 +1,10 @@
 package com.talkramer.finalproject.fragments;
 
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +44,6 @@ public class GridViewFragment extends Fragment {
     }
 
     public GridViewFragment() {
-        // Required empty public constructor
         updateProductsListener = new Model.UpdateProductsListener() {
             @Override
             public void notify(List<Product> products) {
@@ -64,7 +63,9 @@ public class GridViewFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_grid_view, container, false);
         grid = (GridView) view.findViewById(R.id.yani_gridview_gridview);
 
-        data = new LinkedList<Product>();//Model.getInstance().getProducts();
+        if(firstExec)
+            data = new LinkedList<Product>();
+
         imageAadapter = new ImageAdapter();
 
         progressBar = (ProgressBar)view.findViewById(R.id.mainProgressBar);
@@ -86,31 +87,14 @@ public class GridViewFragment extends Fragment {
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack
-                transaction.add(R.id.main_frag_container, newFragment, "ProductDetailsFragment");
+                transaction.replace(R.id.main_frag_container, newFragment);
                 transaction.addToBackStack(null);
                 // Commit the transaction
                 transaction.commit();
             }
         });
 
-        /*Button addProductButton = (Button) view.findViewById(R.id.grid_view_add_product);
-        addProductButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TAG", "GridViewFragment - clicked on add product");
-
-                Fragment newFragment = new NewProductFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
-                transaction.replace(R.id.main_frag_container, newFragment);
-                transaction.addToBackStack(null);
-                // Commit the transaction
-                transaction.commit();
-            }
-        });*/
-
+        //createView call on resume, need to load all products just in first start of current fragment
         if(firstExec)
         {
             firstExec = false;
@@ -137,7 +121,7 @@ public class GridViewFragment extends Fragment {
     private void loadProductData(List<Product> products)
     {
         smallProgressbar.setVisibility(View.VISIBLE);
-        data = products;
+        data = Model.getInstance().getFilterProducts(filter);
         imageAadapter.notifyDataSetChanged();
         Thread thread = new Thread() {
             @Override
@@ -223,11 +207,7 @@ public class GridViewFragment extends Fragment {
                 //Log.d("TAG","list gets image " + localProduct.getId());
                 final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.grid_item_progressbar);
                 progress.setVisibility(View.VISIBLE);
-                if(localProduct.getId().compareTo("19") == 0)
-                {
-                    int a=1;
-                    a++;
-                }
+
                 Model.getInstance().loadImage(localProduct,new Model.LoadImageListener() {
                     @Override
                     public void onResult(String id, Bitmap imageBmp) {
