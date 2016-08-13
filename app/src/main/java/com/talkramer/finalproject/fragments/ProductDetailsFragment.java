@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -173,7 +174,22 @@ public class ProductDetailsFragment extends Fragment {
         //Log.d("TAG", "ProductDetailsFragment -  item use" + productType);
         typeArray = getResources().getStringArray(R.array.product_types_array);
         type.setText(typeArray[productType.ordinal()]);
-        imageView.setImageBitmap(currentProduct.getImageProduct());
+
+        if(currentProduct.getImageProduct() == null)
+        {
+            Model.getInstance().loadImage(currentProduct, new Model.LoadImageListener() {
+                @Override
+                public void onResult(String id, Bitmap imageBmp) {
+                    currentProduct.setImageProduct(imageBmp);
+                    imageView.setImageBitmap(imageBmp);
+                }
+            });
+        }
+        else
+        {
+            imageView.setImageBitmap(currentProduct.getImageProduct());
+        }
+
 
         if(currentProduct.getDeleted())
         {

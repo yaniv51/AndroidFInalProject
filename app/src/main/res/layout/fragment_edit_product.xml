@@ -16,6 +16,8 @@
             android:layout_height="170dp"
             android:id="@+id/edit_product_details_imageView"
             android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             android:clickable="false"/>
 
         <LinearLayout

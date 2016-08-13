@@ -15,6 +15,8 @@
             android:layout_width="170dp"
             android:layout_height="170dp"
             android:id="@+id/new_product_imageView"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             android:layout_gravity="center" />
 
         <LinearLayout

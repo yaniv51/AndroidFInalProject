@@ -163,7 +163,20 @@ public class EditProductFragment extends Fragment {
 
         productType = currentProduct.getType();
         typeSpinner.setSelection(productType.ordinal());
-        imageButton.setImageBitmap(currentProduct.getImageProduct());
+        if(currentProduct.getImageProduct() == null)
+        {
+            Model.getInstance().loadImage(currentProduct, new Model.LoadImageListener() {
+                @Override
+                public void onResult(String id, Bitmap imageBmp) {
+                    currentProduct.setImageProduct(imageBmp);
+                    imageButton.setImageBitmap(imageBmp);
+                }
+            });
+        }
+        else
+        {
+            imageButton.setImageBitmap(currentProduct.getImageProduct());
+        }
     }
 
     private  void setSpinnerAdapter()
