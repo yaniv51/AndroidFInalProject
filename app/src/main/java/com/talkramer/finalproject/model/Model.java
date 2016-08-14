@@ -135,11 +135,21 @@ public class Model {
             //update the local DB
             String reacentUpdate = lastUpdateDate;
             for (Product p : products) {
-                //update DB and image cach
-                cachUpdate(p);
-                if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
-                    reacentUpdate = p.getLastUpdated();
+                //Product localProduct = ProductSql.getProductById(sqlModel.getReadbleDB(), p.getId());
+                String localProductLastUpdate = ProductSql.getProductLastUpdated(sqlModel.getReadbleDB(), p.getId());
+
+                if(localProductLastUpdate == null || p.getLastUpdated().compareTo(localProductLastUpdate) > 0)
+                {
+                    //need to update local product
+                    cachUpdate(p);
+                    //remove local image for forcing update online
+                    boolean deleted = fileManager.removeImage(p.getId());
+
+                    if (reacentUpdate == null || (p.getLastUpdated() != null && p.getLastUpdated().compareTo(reacentUpdate) > 0)) {
+                        reacentUpdate = p.getLastUpdated();
+                    }
                 }
+                //update DB and image cach
                 Log.d("TAG","updating: " + p.toString());
             }
             ProductSql.setLastUpdateDate(sqlModel.getWritableDB(), reacentUpdate);
@@ -257,7 +267,7 @@ public class Model {
 
     public void updateProductInformation(String productId, Product newProduct, OperationListener listener)
     {
-        Product updatedProduct = null;
+        Product updatedProduct;
 
         updatedProduct = ProductSql.getProductById(sqlModel.getReadbleDB(), productId);
         if(updatedProduct != null)
@@ -277,11 +287,11 @@ public class Model {
 
     public void asyncUpdateProduct(final Product product, final OperationListener listener)
     {
-        cloudinaryUpdate(product, new OperationListener() {
+        firebaseModel.updateProduct(product, new OperationListener() {
             @Override
             public void success() {
-                firebaseModel.updateProduct(product, listener);
                 cachUpdate(product);
+                listener.success();
             }
 
             @Override
@@ -297,8 +307,6 @@ public class Model {
         boolean removed = ProductSql.deleteById(sqlModel.getWritableDB(), product.getId());
 
         firebaseModel.remove(product, listener);
-        //TODO: check if cannot use remove on cloudinary because only the admin can remove an object
-        //cloudinary.removeImage(product.getId());
     }
 
     public void buyProduct(Product product, OperationListener listener)

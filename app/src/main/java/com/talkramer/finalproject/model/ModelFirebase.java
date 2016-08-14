@@ -20,6 +20,7 @@ import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Domain.ProductWrapper;
 import com.talkramer.finalproject.model.Utils.Helper;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class ModelFirebase {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private Model.UpdateProductsListener notifyUpdate;
+    private Date lastUpdated = null;
 
     //authentication docs:
     //https://firebase.google.com/docs/auth/android/password-auth
@@ -55,8 +57,16 @@ public class ModelFirebase {
 
                 DataSnapshot data = dataSnapshot.child(Helper.productChildren);
                 products = getProductsFromCloud(data);
-                if(notifyUpdate != null)
+                if(notifyUpdate != null) {
+                    if(lastUpdated == null) //first initialize
+                    {
+                        lastUpdated = new Date();
+                        return;
+                    }
+                    else if(((new Date()).getTime()-lastUpdated.getTime()) / 1000 <5) //if update interval is less than 5 seconds - do not update products
+                        return;
                     notifyUpdate.notify(products);
+                }
             }
 
             @Override

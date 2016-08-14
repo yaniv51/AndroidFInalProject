@@ -248,11 +248,7 @@ public class EditProductFragment extends Fragment {
             return false;
         }
 
-        if(newImage == null)
-            localImage = currentProduct.getImageProduct();
-        else
-            localImage = newImage;
-
+        localImage = currentProduct.getImageProduct();
         newProduct = new Product(currentProduct.getId(), type, description, price , customer,sellerId, sellerEmail, localImage);
         newProduct.setBuyerEmail(buyerEmail);
         newProduct.setDeleted(deleted);
