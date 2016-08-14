@@ -78,10 +78,8 @@ public class MainActivity extends ActionBarActivity {
                         frag.setSearchFilter(filter);
 
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                        transaction.replace(R.id.main_frag_container, frag);
+                        transaction.add(R.id.main_frag_container, frag, "GridViewFragment");
                         transaction.addToBackStack(null);
-                        // Commit the transaction
                         transaction.commit();
                     }
 
@@ -98,9 +96,8 @@ public class MainActivity extends ActionBarActivity {
                 GridViewFragment frag = new GridViewFragment();
                 frag.setFilter(Helper.GridProductFilter.ALL_PRODUCTS);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                //clear fragment back stack
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                transaction.replace(R.id.main_frag_container, frag, Helper.GRID_VIEW_NO_FILTER_TAG);
+                transaction.add(R.id.main_frag_container, frag, "GridViewFragment");
+                transaction.addToBackStack(null);
                 transaction.commit();
                 break;
             }
@@ -108,7 +105,7 @@ public class MainActivity extends ActionBarActivity {
             case R.id.profile: {
                 ProfileFragment frag = new ProfileFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_frag_container, frag, "ProfileFragment");
+                transaction.add(R.id.main_frag_container, frag, "ProfileFragment");
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;

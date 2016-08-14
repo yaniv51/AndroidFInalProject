@@ -76,7 +76,7 @@ public class ProfileFragment extends Fragment {
         frag.setFilter(filter);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.main_frag_container, frag);
+        transaction.add(R.id.main_frag_container, frag, "GridViewFragment");
         transaction.addToBackStack(null);
         // Commit the transaction
         transaction.commit();
