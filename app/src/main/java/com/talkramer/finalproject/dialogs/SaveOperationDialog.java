@@ -17,7 +17,7 @@ public class SaveOperationDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Save Operation");
-        builder.setMessage("Save operation was completed successfully");
+        builder.setMessage("Your product has been updated");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

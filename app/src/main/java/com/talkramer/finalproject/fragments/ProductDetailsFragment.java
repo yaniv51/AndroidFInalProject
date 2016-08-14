@@ -1,5 +1,6 @@
 package com.talkramer.finalproject.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -29,7 +30,7 @@ import com.talkramer.finalproject.model.Utils.Helper;
 public class ProductDetailsFragment extends Fragment {
     private TextView description, price, seller, type, buyer, buyerText;
     private RadioButton menRadio, womenRadio, unisexRadio;
-    private Button buyButton, editButton;
+    private Button buyButton, editButton, contactSeller;
     private ProgressBar progressBar;
     private ImageView imageView;
     private View view;
@@ -50,6 +51,7 @@ public class ProductDetailsFragment extends Fragment {
 
         buyButton = (Button) view.findViewById(R.id.product_details_buy);
         editButton = (Button) view.findViewById(R.id.product_details_edit);
+        contactSeller = (Button) view.findViewById(R.id.product_details_contact);
 
         progressBar = (ProgressBar) view.findViewById(R.id.product_details_progressbar);
 
@@ -91,6 +93,22 @@ public class ProductDetailsFragment extends Fragment {
             }
         });
 
+        contactSeller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message, email;
+
+                //if the user is the seller, send email to buyer
+                if(Model.getInstance().getUserEmail().compareTo(currentProduct.getSellerEmail())==0)
+                    email = currentProduct.getBuyerEmail();
+                else
+                    email = currentProduct.getSellerEmail();
+
+                message = "About product: " + currentProduct.getDescription();
+                sendEmail(message, "Contact", email);
+            }
+        });
+
         //get all UI components
         description = (TextView) view.findViewById(R.id.product_details_description);
         price = (TextView) view.findViewById(R.id.product_details_price);
@@ -105,6 +123,19 @@ public class ProductDetailsFragment extends Fragment {
 
         UpdateProductOnUI();
         return  view;
+    }
+
+    private void sendEmail(String message, String subject, String email)
+    {
+        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        /* Fill it with Data */
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{email});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
+                        /* Send it off to the Activity-Chooser */
+        startActivity(Intent.createChooser(emailIntent, "Send Email..."));
+
     }
 
     @Override
@@ -158,25 +189,37 @@ public class ProductDetailsFragment extends Fragment {
         description.setText(currentProduct.getDescription());
         price.setText("" + currentProduct.getPrice());
         seller.setText(currentProduct.getSellerEmail());
+
+        //if there is a buyer for this product, hide buy & email buttons and text
         if(currentProduct.getBuyerEmail() != null && currentProduct.getBuyerEmail().compareTo("") !=0) {
             buyer.setText(currentProduct.getBuyerEmail());
             buyerText.setVisibility(View.VISIBLE);
+            buyButton.setVisibility(View.GONE);
+            editButton.setVisibility(View.GONE);
         }
         else
         {
             buyerText.setVisibility(View.GONE);
+            buyer.setVisibility(View.GONE);
         }
 
         if(currentProduct.getSellerEmail() != null)
         {
+            //if current user is not the seller of the product, hide edit button
             if(currentProduct.getSellerEmail().compareTo(Model.getInstance().getUserEmail()) != 0) {
                 editButton.setEnabled(false);
                 editButton.setVisibility(View.GONE);
             }
             else
             {
+                //if current user is the seller - hide buy button
                 buyButton.setEnabled(false);
                 buyButton.setVisibility(View.GONE);
+                //if product already bought, hide edit
+                if(currentProduct.getBuyerEmail().compareTo("") != 0)
+                    editButton.setVisibility(View.GONE);
+
+                contactSeller.setText("Contact buyer");
             }
         }
 
@@ -189,6 +232,7 @@ public class ProductDetailsFragment extends Fragment {
         //Log.d("TAG", "ProductDetailsFragment -  item use" + productType);
         typeArray = getResources().getStringArray(R.array.product_types_array);
         type.setText(typeArray[productType.ordinal()]);
+
 
         if(currentProduct.getImageProduct() == null)
         {
