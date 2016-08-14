@@ -22,7 +22,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 
 import com.talkramer.finalproject.R;
-import com.talkramer.finalproject.dialogs.GeneralDialog;
+import com.talkramer.finalproject.dialogs.GenericDialog;
 import com.talkramer.finalproject.dialogs.SaveOperationDialog;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Model;
@@ -88,10 +88,10 @@ public class EditProductFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GeneralDialog dialog = new GeneralDialog();
+                GenericDialog dialog = new GenericDialog();
                 dialog.setTitle("Warning!");
                 dialog.setMsg("Are you sure you want to remove this product?");
-                dialog.setDelegate(new GeneralDialog.GeneralDialogdLisener() {
+                dialog.setDelegate(new GenericDialog.GeneralDialogdLisener() {
                     @Override
                     public void ok() {
                         removeProduct();

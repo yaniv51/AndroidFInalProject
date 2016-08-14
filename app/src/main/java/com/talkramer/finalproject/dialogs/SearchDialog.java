@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -100,6 +101,7 @@ public class SearchDialog extends DialogFragment {
                         HashMap<String, String> filter;
 
                         filter = getSearchFilter();
+                        hideInput();
                         if(filter == null || filter.size() == 0)
                             delegate.cancle();
 
@@ -110,10 +112,17 @@ public class SearchDialog extends DialogFragment {
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Log.d("TAG", "Cancel search operation");
+                        hideInput();
                         delegate.cancle();
                     }
                 });
         return builder.create();
+    }
+
+    private void hideInput()
+    {
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     private void setPriceEnable(boolean enable)
