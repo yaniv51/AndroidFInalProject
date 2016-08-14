@@ -12,7 +12,7 @@ import com.talkramer.finalproject.R;
 /**
  * Created by TAL on 14/08/2016.
  */
-public class GeneralDialog‏ extends DialogFragment {
+public class GenericDialog extends DialogFragment {
 
     GeneralDialogdLisener delegate;
     public String title, msg;

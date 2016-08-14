@@ -1,6 +1,5 @@
 package com.talkramer.finalproject.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -19,7 +18,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
-import com.talkramer.finalproject.dialogs.GeneralDialog;
+import com.talkramer.finalproject.dialogs.GenericDialog;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Model;
 import com.talkramer.finalproject.model.Utils.Helper;
@@ -58,10 +57,10 @@ public class ProductDetailsFragment extends Fragment {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GeneralDialog dialog = new GeneralDialog();
+                GenericDialog dialog = new GenericDialog();
                 dialog.setTitle("Buy Operation");
                 dialog.setMsg("Are you sure you want to buy this product?");
-                dialog.setDelegate(new GeneralDialog.GeneralDialogdLisener() {
+                dialog.setDelegate(new GenericDialog.GeneralDialogdLisener() {
                     @Override
                     public void ok() {
                         buyProduct();
@@ -219,7 +218,10 @@ public class ProductDetailsFragment extends Fragment {
                 if(currentProduct.getBuyerEmail().compareTo("") != 0)
                     editButton.setVisibility(View.GONE);
 
-                contactSeller.setText("Contact buyer");
+                if(currentProduct.getBuyerEmail().compareTo("")!=0)
+                    contactSeller.setText("Contact buyer");
+                else
+                    contactSeller.setVisibility(View.GONE);
             }
         }
 
@@ -301,15 +303,8 @@ public class ProductDetailsFragment extends Fragment {
             public void success() {
                 setEnable(true);
                 buyButton.setEnabled(false);
-                        /* Create the Intent */
-                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-                        /* Fill it with Data */
-                emailIntent.setType("plain/text");
-                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{currentProduct.getSellerEmail()});
-                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "BUY");
-                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hi I want to buy your product with description: " + currentProduct.getDescription());
-                        /* Send it off to the Activity-Chooser */
-                startActivity(Intent.createChooser(emailIntent, "Send Email..."));
+                sendEmail("Hi I want to buy your product with description: " + currentProduct.getDescription(), "BUY", currentProduct.getSellerEmail());
+
                 showMessage("Congratulation! You bought the product.");
                 buyerText.setVisibility(view.VISIBLE);
                 UpdateProductOnUI();
