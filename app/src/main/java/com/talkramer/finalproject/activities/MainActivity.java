@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.talkramer.finalproject.ApplicationStartup;
@@ -31,7 +32,7 @@ public class MainActivity extends ActionBarActivity {
         ApplicationStartup.setActivity(this);
 
         FirebaseUser user = Model.getInstance().getFirebaseUser();
-
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         if(user == null)
         {
             SignInFragment frag = new SignInFragment();
