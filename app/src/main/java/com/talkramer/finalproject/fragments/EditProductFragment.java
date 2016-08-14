@@ -3,11 +3,11 @@ package com.talkramer.finalproject.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,11 +22,11 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.dialogs.GeneralDialog;
 import com.talkramer.finalproject.dialogs.SaveOperationDialog;
-
-import com.talkramer.finalproject.model.Utils.Helper;
-import com.talkramer.finalproject.model.Model;
 import com.talkramer.finalproject.model.Domain.Product;
+import com.talkramer.finalproject.model.Model;
+import com.talkramer.finalproject.model.Utils.Helper;
 
 
 /**
@@ -88,9 +88,20 @@ public class EditProductFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.DELETE.ordinal());
-                Log.d("TAG", "EditProductFragment - Product has been deleted");
-                getFragmentManager().popBackStack();
+                GeneralDialog dialog = new GeneralDialog();
+                dialog.setTitle("Warning!");
+                dialog.setMsg("Are you sure you want to remove this product?");
+                dialog.setDelegate(new GeneralDialog.GeneralDialogdLisener() {
+                    @Override
+                    public void ok() {
+                        removeProduct();
+                    }
+                    @Override
+                    public void cancle() {
+                        return;
+                    }
+                });
+                dialog.show(getFragmentManager(), "GGG");
             }
         });
 
@@ -298,5 +309,11 @@ public class EditProductFragment extends Fragment {
         cancelButton.setEnabled(enable);
         imageButton.setEnabled(enable);
         deleteButton.setEnabled(enable);
+    }
+
+    private void removeProduct(){
+        getActivity().getIntent().putExtra(Helper.OPERATION, Helper.ActionResult.DELETE.ordinal());
+        Log.d("TAG", "EditProductFragment - Product has been deleted");
+        getFragmentManager().popBackStack();
     }
 }
