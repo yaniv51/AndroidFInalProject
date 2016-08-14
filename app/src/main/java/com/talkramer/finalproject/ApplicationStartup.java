@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -89,6 +90,12 @@ public class ApplicationStartup extends Application {
         //commits your edits
         editor.commit();
 
+    }
+
+    public static boolean hasInternetConnection()
+    {
+        ConnectivityManager cm = (ConnectivityManager) getAppActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     public static Context getAppContext(){return context;}

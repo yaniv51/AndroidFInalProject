@@ -40,7 +40,7 @@ public class ProfileFragment extends Fragment {
                 Fragment frag = new NewProductFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 //clear fragment back stack
-                transaction.add(R.id.main_frag_container, frag, "NewProductFragment");
+                transaction.replace(R.id.main_frag_container, frag, "NewProductFragment");
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -76,7 +76,7 @@ public class ProfileFragment extends Fragment {
         frag.setFilter(filter);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-        transaction.add(R.id.main_frag_container, frag, "GridViewFragment");
+        transaction.replace(R.id.main_frag_container, frag, "GridViewFragment");
         transaction.addToBackStack(null);
         // Commit the transaction
         transaction.commit();

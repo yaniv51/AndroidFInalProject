@@ -2,6 +2,7 @@ package com.talkramer.finalproject.model.Domain;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.util.StringBuilderPrinter;
@@ -211,6 +212,23 @@ public class ProductSql {
             } while (cursor.moveToNext());
         }
         return products;
+    }
+
+    public static String getProductLastUpdated(SQLiteDatabase db, String id)
+    {
+        String where = PRODUCT_TABLE_ID + " = ?";
+        String[] args = {id};
+        String[] columns = {PRODUCT_LAST_UPDATED.toString()};
+        Cursor cursor = db.query(PRODUCT_TABLE, columns, where, args, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            int lastUpdateIndex = cursor.getColumnIndex(PRODUCT_LAST_UPDATED);
+
+            String lastUpdated = cursor.getString(lastUpdateIndex);
+
+            return lastUpdated;
+        }
+        return null;
     }
 
     public static Product getProductById(SQLiteDatabase db, String id) {

@@ -77,7 +77,6 @@ public class FileManagerHelper {
                 boolean deleted = imageFile.delete();
                 if(!deleted)
                 {
-                    Log.d("TAG", "image already exist, could not update image");
                     return;
                 }
                 Log.d("TAG", "image already exist,  update image");
@@ -103,9 +102,27 @@ public class FileManagerHelper {
         }
     }
 
-    //TODO: implement function
-    public void removeImage(String imageName)
+    public boolean removeImage(String imageName)
     {
-
+        boolean deleted = false;
+        if(imageName == null)
+            return false;
+        try {
+            File dir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            if (!dir.exists()) {
+                return false;
+            }
+            File imageFile = new File(dir, imageName);
+            if (imageFile.exists()) {
+                deleted = imageFile.delete();
+            }
+        }catch (Exception e)
+        {
+            Log.d("TAG","Could not remove image "+imageName +". "+e.getMessage());
+        }
+        finally {
+            return deleted;
+        }
     }
 }
