@@ -20,12 +20,20 @@
             android:layout_marginLeft="60dp"
             android:id="@+id/image_signIn_fragment"/>
 
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="My Shop"
+            android:layout_marginLeft="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40dp"/>
+
         <EditText
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="80dp"
             android:id="@+id/email_signIn_fragment"/>
 
         <EditText

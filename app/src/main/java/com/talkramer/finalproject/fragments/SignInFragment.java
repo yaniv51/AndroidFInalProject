@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.activities.MainActivity;
 import com.talkramer.finalproject.dialogs.ForgotPasswordDialog;
 import com.talkramer.finalproject.model.Model;
 import com.talkramer.finalproject.model.Utils.Helper;
@@ -33,6 +34,8 @@ public class SignInFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        ((MainActivity) getActivity()).getSupportActionBar().hide();
+
         view = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
         signInButton = (Button) view.findViewById(R.id.signInButton_signIn_fragment);

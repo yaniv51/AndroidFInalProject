@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.activities.MainActivity;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Model;
 import com.talkramer.finalproject.model.Utils.Helper;
@@ -65,6 +66,7 @@ public class GridViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).getSupportActionBar().show();
         Log.d("TAG", "Create grid view");
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_grid_view, container, false);
