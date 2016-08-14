@@ -93,31 +93,37 @@
                     android:paddingRight="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/search_dialog_radio_group"
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/search_dialog_radio_group"
+                android:layout_width="wrap_content"
+                android:paddingLeft="30dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton android:id="@+id/search_dialog_radio_men"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <RadioButton android:id="@+id/search_dialog_radio_men"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Men"
-                        android:enabled="false"
-                        android:paddingRight="12dp"/>
-                    <RadioButton android:id="@+id/search_dialog_radio_women"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:text="Women"
-                        android:paddingRight="12dp" />
-                    <RadioButton android:id="@+id/search_dialog_radio_unisex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:text="Unisex" />
-                </RadioGroup>
-            </LinearLayout>
+                    android:text="Men"
+                    android:enabled="false"
+                    android:paddingRight="12dp"/>
+                <RadioButton android:id="@+id/search_dialog_radio_women"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="Women"
+                    android:paddingRight="12dp" />
+                <RadioButton android:id="@+id/search_dialog_radio_unisex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="Unisex" />
+            </RadioGroup>
+        </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
