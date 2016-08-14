@@ -58,6 +58,16 @@ public class SignInFragment extends Fragment {
                 email = emailext.getText().toString();
                 password = passwordText.getText().toString();
 
+                if(email.compareTo("") == 0) {
+                    showAlertDialog("Please type an email", false);
+                    return;
+                }
+                if(password.compareTo("") == 0)
+                {
+                    showAlertDialog("Please type a valid password", false);
+                    return;
+                }
+
                 Log.d("TAG", "register pressed: email: " + email + ", Password: "+ password);
                 signUp(email, password);
             }
