@@ -1,6 +1,5 @@
 package com.talkramer.finalproject.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -19,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.talkramer.finalproject.R;
+import com.talkramer.finalproject.dialogs.GeneralDialog;
 import com.talkramer.finalproject.model.Domain.Product;
 import com.talkramer.finalproject.model.Model;
 import com.talkramer.finalproject.model.Utils.Helper;
@@ -56,32 +56,21 @@ public class ProductDetailsFragment extends Fragment {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setEnable(false);
-                Model.getInstance().buyProduct(currentProduct, new Model.OperationListener() {
+                GeneralDialog dialog = new GeneralDialog();
+                dialog.setTitle("Buy Operation");
+                dialog.setMsg("Are you sure you want to buy this product?");
+                dialog.setDelegate(new GeneralDialog.GeneralDialogdLisener() {
                     @Override
-                    public void success() {
-                        setEnable(true);
-                        buyButton.setEnabled(false);
-                        /* Create the Intent */
-                        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-                        /* Fill it with Data */
-                        emailIntent.setType("plain/text");
-                        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{currentProduct.getSellerEmail()});
-                        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "BUY");
-                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hi I want to buy your product with description: " + currentProduct.getDescription());
-                        /* Send it off to the Activity-Chooser */
-                        startActivity(Intent.createChooser(emailIntent, "Send Email..."));
-                        showMessage("Congratulation! You bought the product.");
-                        buyerText.setVisibility(view.VISIBLE);
-                        UpdateProductOnUI();
+                    public void ok() {
+                        buyProduct();
                     }
-
                     @Override
-                    public void fail(String msg) {
-                        setEnable(true);
-                        showMessage("Could not buy product. Try again later. " + msg);
+                    public void cancle() {
+                        return;
                     }
                 });
+                dialog.show(getFragmentManager(), "GGG");
+
             }
         });
 
@@ -259,5 +248,34 @@ public class ProductDetailsFragment extends Fragment {
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    private void buyProduct(){
+        setEnable(false);
+        Model.getInstance().buyProduct(currentProduct, new Model.OperationListener() {
+            @Override
+            public void success() {
+                setEnable(true);
+                buyButton.setEnabled(false);
+                        /* Create the Intent */
+                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        /* Fill it with Data */
+                emailIntent.setType("plain/text");
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{currentProduct.getSellerEmail()});
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "BUY");
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hi I want to buy your product with description: " + currentProduct.getDescription());
+                        /* Send it off to the Activity-Chooser */
+                startActivity(Intent.createChooser(emailIntent, "Send Email..."));
+                showMessage("Congratulation! You bought the product.");
+                buyerText.setVisibility(view.VISIBLE);
+                UpdateProductOnUI();
+            }
+
+            @Override
+            public void fail(String msg) {
+                setEnable(true);
+                showMessage("Could not buy product. Try again later. " + msg);
+            }
+        });
     }
 }
