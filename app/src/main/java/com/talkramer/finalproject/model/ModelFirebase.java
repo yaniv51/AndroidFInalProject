@@ -179,7 +179,12 @@ public class ModelFirebase {
 
         products = new LinkedList<Product>();
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            Product product = snapshot.getValue(Product.class);
+            ProductWrapper wrapperProduct = snapshot.getValue(ProductWrapper.class);
+            Product product = new Product(wrapperProduct.getId(), wrapperProduct.getType(), wrapperProduct.getDescription(), wrapperProduct.getPrice(),wrapperProduct.getForWhom(), wrapperProduct.getSellerId(), wrapperProduct.getSellerEmail(), null);
+            product.setDeleted(wrapperProduct.getDeleted());
+            product.setBuyerEmail(wrapperProduct.getBuyerEmail());
+            product.setLastUpdated(wrapperProduct.getLastUpdated());
+            //Product product = snapshot.getValue(Product.class);
             products.add(product);
         }
         return  products;

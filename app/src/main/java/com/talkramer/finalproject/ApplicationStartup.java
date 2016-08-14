@@ -31,6 +31,14 @@ public class ApplicationStartup extends Application {
         if(defaultImage == null)
             Log.d("TAG", "null default image");
         //Model.getInstance().SetLocalBitmap(defaultImage);
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) {
+                Log.d("TAG", "Unhandle exception: /n"+ex.getMessage());
+                ex.printStackTrace();
+            }
+        });
     }
 
     public static void setActivity(Activity myActivity)

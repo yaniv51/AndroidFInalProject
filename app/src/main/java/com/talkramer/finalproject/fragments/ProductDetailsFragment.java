@@ -113,7 +113,7 @@ public class ProductDetailsFragment extends Fragment {
         imageView = (ImageView) view.findViewById(R.id.product_details_imageView);
         buyer = (TextView) view.findViewById(R.id.product_details_buyer);
         buyerText = (TextView) view.findViewById(R.id.product_details_text_buyer);
-        buyerText.setVisibility(view.INVISIBLE);
+
         UpdateProductOnUI();
         return  view;
     }
@@ -171,6 +171,11 @@ public class ProductDetailsFragment extends Fragment {
         seller.setText(currentProduct.getSellerEmail());
         if(currentProduct.getBuyerEmail() != null && currentProduct.getBuyerEmail().compareTo("") !=0) {
             buyer.setText(currentProduct.getBuyerEmail());
+            buyerText.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            buyerText.setVisibility(View.GONE);
         }
 
         if(currentProduct.getSellerEmail() != null)
