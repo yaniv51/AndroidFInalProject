@@ -63,7 +63,7 @@ public class ProductSql {
         List<Product> products;
         String where;
 
-        where = PRODUCT_TABLE_DELETED + " = ? and " + PRODUCT_BUYER + " == ?";
+        where = PRODUCT_TABLE_DELETED + " = ? and " + PRODUCT_BUYER + " = ?";
         String[] args = {"0", ""};
 
         cursor = db.query(PRODUCT_TABLE, null, where , args, null, null, null);
@@ -76,8 +76,8 @@ public class ProductSql {
         Cursor cursor;
         List<Product> products;
 
-        String[] args = {sellerId};
-        where = PRODUCT_TABEL_SELLER_ID + " = ?";
+        String[] args = {sellerId, "0"};
+        where = PRODUCT_TABEL_SELLER_ID + " = ? and "+ PRODUCT_TABLE_DELETED + " = ?";
         cursor = db.query(PRODUCT_TABLE, null, where, args, null, null, null);
 
         products = getProductsByCursor(cursor);
@@ -89,8 +89,8 @@ public class ProductSql {
         Cursor cursor;
         List<Product> products;
 
-        String[] args = {sellerId, ""};
-        where = PRODUCT_TABEL_SELLER_ID + " = ? and " + PRODUCT_BUYER + " != ?" ;
+        String[] args = {sellerId, "", "0"};
+        where = PRODUCT_TABEL_SELLER_ID + " = ? and " + PRODUCT_BUYER + " != ? and "+ PRODUCT_TABLE_DELETED +" = ?" ;
         cursor = db.query(PRODUCT_TABLE, null, where, args, null, null, null);
 
         products = getProductsByCursor(cursor);
@@ -102,8 +102,8 @@ public class ProductSql {
         Cursor cursor;
         List<Product> products;
 
-        String[] args = {buyerId};
-        where = PRODUCT_BUYER + " = ?";
+        String[] args = {buyerId,"0"};
+        where = PRODUCT_BUYER + " = ? and " + PRODUCT_TABLE_DELETED +" = ?";
         cursor = db.query(PRODUCT_TABLE, null, where, args, null, null, null);
 
         products = getProductsByCursor(cursor);
