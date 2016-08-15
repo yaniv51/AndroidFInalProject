@@ -10,7 +10,8 @@
         android:layout_height="fill_parent"
         android:orientation="vertical"
         android:padding="10dp"
-        tools:context=".main">
+        tools:context=".main"
+        android:id="@+id/product_details_layout">
         <ImageButton
             android:layout_width="170dp"
             android:layout_height="170dp"

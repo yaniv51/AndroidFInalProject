@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -31,9 +33,10 @@ public class ProductDetailsFragment extends Fragment {
     private RadioButton menRadio, womenRadio, unisexRadio;
     private Button buyButton, editButton, contactSeller;
     private ProgressBar progressBar;
-    private ImageView imageView;
     private View view;
+    private ImageView imageView;
     private Product currentProduct;
+    private boolean zoomOut;
 
     public ProductDetailsFragment() {
     }
@@ -52,6 +55,9 @@ public class ProductDetailsFragment extends Fragment {
         editButton = (Button) view.findViewById(R.id.product_details_edit);
         contactSeller = (Button) view.findViewById(R.id.product_details_contact);
 
+        imageView = (ImageView) view.findViewById(R.id.product_details_imageView);
+        zoomOut = true;
+
         progressBar = (ProgressBar) view.findViewById(R.id.product_details_progressbar);
 
         buyButton.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +71,7 @@ public class ProductDetailsFragment extends Fragment {
                     public void ok() {
                         buyProduct();
                     }
+
                     @Override
                     public void cancle() {
                         return;
@@ -108,6 +115,26 @@ public class ProductDetailsFragment extends Fragment {
             }
         });
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (zoomOut) {
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    zoomOut = false;
+                } else {
+                    //imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.image_view_dp), (int)getResources().getDimension(R.dimen.image_view_dp)));
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    imageView.setAdjustViewBounds(true);
+                    LinearLayout layout = (LinearLayout)view.findViewById(R.id.product_details_layout);
+                    layout.setGravity(Gravity.CENTER);
+                    zoomOut = true;
+                }
+            }
+        });
+
+
         //get all UI components
         description = (TextView) view.findViewById(R.id.product_details_description);
         price = (TextView) view.findViewById(R.id.product_details_price);
@@ -116,7 +143,6 @@ public class ProductDetailsFragment extends Fragment {
         menRadio = (RadioButton) view.findViewById(R.id.product_details_radio_men);
         womenRadio = (RadioButton) view.findViewById(R.id.product_details_radio_women);
         unisexRadio = (RadioButton) view.findViewById(R.id.product_details_radio_unisex);
-        imageView = (ImageView) view.findViewById(R.id.product_details_imageView);
         buyer = (TextView) view.findViewById(R.id.product_details_buyer);
         buyerText = (TextView) view.findViewById(R.id.product_details_text_buyer);
 
