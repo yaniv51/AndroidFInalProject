@@ -123,7 +123,9 @@ public class ProductDetailsFragment extends Fragment {
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     zoomOut = false;
                 } else {
-                    imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    //imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.image_view_dp), (int)getResources().getDimension(R.dimen.image_view_dp)));
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     imageView.setAdjustViewBounds(true);
                     LinearLayout layout = (LinearLayout)view.findViewById(R.id.product_details_layout);
                     layout.setGravity(Gravity.CENTER);
