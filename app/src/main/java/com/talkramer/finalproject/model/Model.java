@@ -138,7 +138,7 @@ public class Model {
                 //Product localProduct = ProductSql.getProductById(sqlModel.getReadbleDB(), p.getId());
                 String localProductLastUpdate = ProductSql.getProductLastUpdated(sqlModel.getReadbleDB(), p.getId());
 
-                if(localProductLastUpdate == null || p.getLastUpdated().compareTo(localProductLastUpdate) > 0 || p.getDeleted())
+                if(localProductLastUpdate == null || p.getLastUpdated().compareTo(localProductLastUpdate) > 0 || p.getDeleted() || p.getBuyerEmail().compareTo("")!=0)
                 {
                     //need to update local product
                     cachUpdate(p);
